@@ -1,0 +1,165 @@
+Changed database context to 'ToeicDb'.
+===== 1. BẢNG VÀ SỐ DÒNG =====
+RtAttemptAnswers 160 13
+RtAttempts 2 20
+RtExams 1 19
+RtPassageDocuments 29 14
+RtPassages 19 14
+RtQuestionOptions 400 12
+RtQuestions 100 17
+===== 2. CỘT CỦA TỪNG BẢNG =====
+RtAttemptAnswers 1 Id bigint NOT NULL PK 
+RtAttemptAnswers 2 AttemptId bigint NOT NULL  FK
+RtAttemptAnswers 3 QuestionId bigint NOT NULL  FK
+RtAttemptAnswers 4 SelectedKey nvarchar(4) NULL  
+RtAttemptAnswers 5 IsCorrect bit NOT NULL  
+RtAttemptAnswers 6 AnsweredAt datetime2 NOT NULL  
+RtAttemptAnswers 7 CreationTime datetime2 NOT NULL  
+RtAttemptAnswers 8 CreatorUserId bigint NULL  
+RtAttemptAnswers 9 LastModificationTime datetime2 NULL  
+RtAttemptAnswers 10 LastModifierUserId bigint NULL  
+RtAttemptAnswers 11 IsDeleted bit NOT NULL  
+RtAttemptAnswers 12 DeleterUserId bigint NULL  
+RtAttemptAnswers 13 DeletionTime datetime2 NULL  
+RtAttempts 1 Id bigint NOT NULL PK 
+RtAttempts 2 ExamId bigint NOT NULL  FK
+RtAttempts 3 UserId bigint NOT NULL  
+RtAttempts 4 StudentCode nvarchar(64) NULL  
+RtAttempts 5 StudentName nvarchar(128) NULL  
+RtAttempts 6 StartedAt datetime2 NOT NULL  
+RtAttempts 7 SubmittedAt datetime2 NULL  
+RtAttempts 8 Status int NOT NULL  
+RtAttempts 9 Score int NOT NULL  
+RtAttempts 10 CorrectCount int NOT NULL  
+RtAttempts 11 WrongCount int NOT NULL  
+RtAttempts 12 SkippedCount int NOT NULL  
+RtAttempts 13 DurationSeconds int NOT NULL  
+RtAttempts 14 CreationTime datetime2 NOT NULL  
+RtAttempts 15 CreatorUserId bigint NULL  
+RtAttempts 16 LastModificationTime datetime2 NULL  
+RtAttempts 17 LastModifierUserId bigint NULL  
+RtAttempts 18 IsDeleted bit NOT NULL  
+RtAttempts 19 DeleterUserId bigint NULL  
+RtAttempts 20 DeletionTime datetime2 NULL  
+RtExams 1 Id bigint NOT NULL PK 
+RtExams 2 Title nvarchar(256) NOT NULL  
+RtExams 3 Description nvarchar(512) NULL  
+RtExams 4 DurationMinutes int NOT NULL  
+RtExams 5 TotalQuestions int NOT NULL  
+RtExams 6 Status int NOT NULL  
+RtExams 7 SourceFile nvarchar(256) NULL  
+RtExams 8 PublishedAt datetime2 NULL  
+RtExams 9 OpenAt datetime2 NULL  
+RtExams 10 CloseAt datetime2 NULL  
+RtExams 11 ShuffleQuestions bit NOT NULL  
+RtExams 12 ShuffleOptions bit NOT NULL  
+RtExams 13 CreationTime datetime2 NOT NULL  
+RtExams 14 CreatorUserId bigint NULL  
+RtExams 15 LastModificationTime datetime2 NULL  
+RtExams 16 LastModifierUserId bigint NULL  
+RtExams 17 IsDeleted bit NOT NULL  
+RtExams 18 DeleterUserId bigint NULL  
+RtExams 19 DeletionTime datetime2 NULL  
+RtPassageDocuments 1 Id bigint NOT NULL PK 
+RtPassageDocuments 2 PassageId bigint NOT NULL  FK
+RtPassageDocuments 3 Label nvarchar(256) NULL  
+RtPassageDocuments 4 DocumentType nvarchar(64) NULL  
+RtPassageDocuments 5 Text nvarchar(max) NULL  
+RtPassageDocuments 6 ImagePath nvarchar(512) NULL  
+RtPassageDocuments 7 OrderIndex int NOT NULL  
+RtPassageDocuments 8 CreationTime datetime2 NOT NULL  
+RtPassageDocuments 9 CreatorUserId bigint NULL  
+RtPassageDocuments 10 LastModificationTime datetime2 NULL  
+RtPassageDocuments 11 LastModifierUserId bigint NULL  
+RtPassageDocuments 12 IsDeleted bit NOT NULL  
+RtPassageDocuments 13 DeleterUserId bigint NULL  
+RtPassageDocuments 14 DeletionTime datetime2 NULL  
+RtPassages 1 Id bigint NOT NULL PK 
+RtPassages 2 ExamId bigint NOT NULL  FK
+RtPassages 3 GroupCode nvarchar(64) NULL  
+RtPassages 4 Part int NOT NULL  
+RtPassages 5 PassageType nvarchar(64) NULL  
+RtPassages 6 Header nvarchar(512) NULL  
+RtPassages 7 OrderIndex int NOT NULL  
+RtPassages 8 CreationTime datetime2 NOT NULL  
+RtPassages 9 CreatorUserId bigint NULL  
+RtPassages 10 LastModificationTime datetime2 NULL  
+RtPassages 11 LastModifierUserId bigint NULL  
+RtPassages 12 IsDeleted bit NOT NULL  
+RtPassages 13 DeleterUserId bigint NULL  
+RtPassages 14 DeletionTime datetime2 NULL  
+RtQuestionOptions 1 Id bigint NOT NULL PK 
+RtQuestionOptions 2 QuestionId bigint NOT NULL  FK
+RtQuestionOptions 3 OptionKey nvarchar(4) NOT NULL  
+RtQuestionOptions 4 Text nvarchar(max) NULL  
+RtQuestionOptions 5 OrderIndex int NOT NULL  
+RtQuestionOptions 6 CreationTime datetime2 NOT NULL  
+RtQuestionOptions 7 CreatorUserId bigint NULL  
+RtQuestionOptions 8 LastModificationTime datetime2 NULL  
+RtQuestionOptions 9 LastModifierUserId bigint NULL  
+RtQuestionOptions 10 IsDeleted bit NOT NULL  
+RtQuestionOptions 11 DeleterUserId bigint NULL  
+RtQuestionOptions 12 DeletionTime datetime2 NULL  
+RtQuestions 1 Id bigint NOT NULL PK 
+RtQuestions 2 ExamId bigint NOT NULL  FK
+RtQuestions 3 PassageId bigint NULL  FK
+RtQuestions 4 Number int NOT NULL  
+RtQuestions 5 Part int NOT NULL  
+RtQuestions 6 Stem nvarchar(max) NULL  
+RtQuestions 7 AnswerKey nvarchar(4) NULL  
+RtQuestions 8 Hint nvarchar(max) NULL  
+RtQuestions 9 OrderIndex int NOT NULL  
+RtQuestions 10 ShuffleQuestions nvarchar(16) NULL  
+RtQuestions 11 CreationTime datetime2 NOT NULL  
+RtQuestions 12 CreatorUserId bigint NULL  
+RtQuestions 13 LastModificationTime datetime2 NULL  
+RtQuestions 14 LastModifierUserId bigint NULL  
+RtQuestions 15 IsDeleted bit NOT NULL  
+RtQuestions 16 DeleterUserId bigint NULL  
+RtQuestions 17 DeletionTime datetime2 NULL  
+===== 3. QUAN HỆ KHOÁ NGOẠI =====
+RtAttemptAnswers AttemptId -> RtAttempts Id CASCADE (xoá theo) FK_RtAttemptAnswers_RtAttempts_AttemptId
+RtAttempts ExamId -> RtExams Id NO ACTION (ch?n xoá) FK_RtAttempts_RtExams_ExamId
+RtPassages ExamId -> RtExams Id NO ACTION (ch?n xoá) FK_RtPassages_RtExams_ExamId
+RtQuestions ExamId -> RtExams Id NO ACTION (ch?n xoá) FK_RtQuestions_RtExams_ExamId
+RtPassageDocuments PassageId -> RtPassages Id CASCADE (xoá theo) FK_RtPassageDocuments_RtPassages_PassageId
+RtQuestions PassageId -> RtPassages Id NO ACTION (ch?n xoá) FK_RtQuestions_RtPassages_PassageId
+RtAttemptAnswers QuestionId -> RtQuestions Id CASCADE (xoá theo) FK_RtAttemptAnswers_RtQuestions_QuestionId
+RtQuestionOptions QuestionId -> RtQuestions Id CASCADE (xoá theo) FK_RtQuestionOptions_RtQuestions_QuestionId
+===== 4. SƠ ĐỒ DẠNG CÂY =====
+■ RtExams
+     ⤷ RtAttempts  (ExamId, no action)
+          ⤷ RtAttemptAnswers  (AttemptId, cascade)
+     ⤷ RtPassages  (ExamId, no action)
+          ⤷ RtPassageDocuments  (PassageId, cascade)
+          ⤷ RtQuestions  (PassageId, no action)
+               ⤷ RtAttemptAnswers  (QuestionId, cascade)
+               ⤷ RtQuestionOptions  (QuestionId, cascade)
+     ⤷ RtQuestions  (ExamId, no action)
+          ⤷ RtAttemptAnswers  (QuestionId, cascade)
+          ⤷ RtQuestionOptions  (QuestionId, cascade)
+===== 5. MERMAID erDiagram (copy phần chữ bên dưới) =====
+erDiagram
+  RtAttempts ||--o{ RtAttemptAnswers : "AttemptId"
+  RtExams ||--o{ RtAttempts : "ExamId"
+  RtExams ||--o{ RtPassages : "ExamId"
+  RtExams ||--o{ RtQuestions : "ExamId"
+  RtPassages ||--o{ RtQuestions : "PassageId"
+  RtPassages ||--o{ RtPassageDocuments : "PassageId"
+  RtQuestions ||--o{ RtAttemptAnswers : "QuestionId"
+  RtQuestions ||--o{ RtQuestionOptions : "QuestionId"
+===== 6. DỮ LIỆU ĐANG CÓ =====
+Đề 1
+Bài đọc 19
+Thành phần bài đọc 29
+Câu hỏi 100
+Phương án 400
+Lượt làm bài 2
+Đáp án đã chọn 160
+--- Câu hỏi theo Part ---
+5 30
+6 16
+7 54
+--- Kết quả từng lượt ---
+2380614025 Phạm Duy Tiên 70 70 10 20 1
+2380614777 Nguyễn Văn A 53 53 27 20 1
