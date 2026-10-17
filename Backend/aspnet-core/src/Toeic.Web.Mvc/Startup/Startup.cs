@@ -82,6 +82,18 @@ public class Startup
 
         app.UseStaticFiles();
 
+        // Ảnh bài đọc được import từ file Word, lưu ngoài wwwroot (dùng chung cho Web và API)
+        var uploadsRoot = _appConfiguration["Uploads:Root"];
+        if (!string.IsNullOrWhiteSpace(uploadsRoot))
+        {
+            System.IO.Directory.CreateDirectory(uploadsRoot);
+            app.UseStaticFiles(new Microsoft.AspNetCore.Builder.StaticFileOptions
+            {
+                FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsRoot),
+                RequestPath = "/uploads"
+            });
+        }
+
         app.UseRouting();
 
         app.UseAuthentication();

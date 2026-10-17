@@ -59,6 +59,14 @@ namespace Toeic.ReadingTest.Parsing
             public string Type { get; set; }
             public string Text { get; set; }
             public string ImageSrc { get; set; }
+            public byte[] ImageBytes { get; set; }
+            public string ImageExtension { get; set; }
+        }
+
+        private sealed class DocxImage
+        {
+            public byte[] Bytes { get; set; }
+            public string Extension { get; set; }
         }
 
         public class ParsedQuestion
@@ -74,7 +82,7 @@ namespace Toeic.ReadingTest.Parsing
 
         public ParsedExam Parse(Stream docx)
         {
-            var lines = ReadLines(docx);
+            var lines = ReadElements(docx);
             var exam = new ParsedExam();
 
             ParsedPart part = null;
@@ -88,7 +96,21 @@ namespace Toeic.ReadingTest.Parsing
 
             foreach (var raw in lines)
             {
-                var line = raw.Trim();
+                if (raw is DocxImage img)
+                {
+                    if (passage == null) continue;
+                    var target = passage.Documents.LastOrDefault(d => d.Type == "image" && d.ImageBytes == null);
+                    if (target == null)
+                    {
+                        target = new ParsedDocument { Type = "image", Label = "image" };
+                        passage.Documents.Add(target);
+                    }
+                    target.ImageBytes = img.Bytes;
+                    target.ImageExtension = img.Extension;
+                    continue;
+                }
+
+                var line = ((string)raw).Trim();
                 if (line.Length == 0) continue;
 
                 if (line.StartsWith("[[SPEC") || line.StartsWith("[[ANSWER_SHEET"))
@@ -303,22 +325,43 @@ namespace Toeic.ReadingTest.Parsing
             return d;
         }
 
-        private static List<string> ReadLines(Stream stream)
+        private static List<object> ReadElements(Stream stream)
         {
-            var lines = new List<string>();
+            var items = new List<object>();
             using var doc = WordprocessingDocument.Open(stream, false);
-            var body = doc.MainDocumentPart?.Document?.Body;
-            if (body == null) return lines;
+            var main = doc.MainDocumentPart;
+            var body = main?.Document?.Body;
+            if (body == null) return items;
 
             foreach (var el in body.Descendants<Paragraph>())
             {
                 var text = string.Concat(el.Descendants<Text>().Select(t => t.Text));
-                if (string.IsNullOrWhiteSpace(text)) continue;
-                // a paragraph may hold several tag lines separated by breaks
-                foreach (var chunk in text.Split('\n'))
-                    lines.Add(chunk);
+                if (!string.IsNullOrWhiteSpace(text))
+                {
+                    foreach (var chunk in text.Split('\n'))
+                        items.Add(chunk);
+                    continue;
+                }
+
+                var blip = el.Descendants<DocumentFormat.OpenXml.Drawing.Blip>().FirstOrDefault();
+                var embed = blip?.Embed?.Value;
+                if (string.IsNullOrEmpty(embed)) continue;
+                if (!(main.GetPartById(embed) is ImagePart part)) continue;
+
+                using var ms = new MemoryStream();
+                using var src = part.GetStream();
+                src.CopyTo(ms);
+                var ext = part.ContentType switch
+                {
+                    "image/png" => ".png",
+                    "image/jpeg" => ".jpg",
+                    "image/gif" => ".gif",
+                    "image/bmp" => ".bmp",
+                    _ => ".png"
+                };
+                items.Add(new DocxImage { Bytes = ms.ToArray(), Extension = ext });
             }
-            return lines;
+            return items;
         }
     }
 }

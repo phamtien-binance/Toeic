@@ -1,6 +1,7 @@
 @model Toeic.ReadingTest.Dto.ExamDetailDto
 @{
     Layout = "~/Views/Shared/_ExamLayout.cshtml";
+    ViewBag.ExamId = Model.Id;
 }
 @section TopActions {
     <span class="badge @(Model.Status == "Published" ? "badge-green" : "badge-amber")">

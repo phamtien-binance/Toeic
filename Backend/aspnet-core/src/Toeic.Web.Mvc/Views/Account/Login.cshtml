@@ -47,7 +47,7 @@
             }
 
             <form id="LoginForm" method="post" asp-action="Login">
-                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <input type="hidden" name="returnUrl" value="@(string.IsNullOrWhiteSpace(Model.ReturnUrl) ? "/Exam" : Model.ReturnUrl)" />
                 <input type="hidden" name="returnUrlHash" />
                 <div class="stack">
                     <div class="field">

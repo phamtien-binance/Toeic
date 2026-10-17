@@ -72,6 +72,13 @@ Android emulator dùng mặc định `http://10.0.2.2:5000` (không cần dart-d
 3. File sai tag/thiếu đáp án → danh sách lỗi hiện ngay, **không ghi CSDL**
 4. File hợp lệ → chuyển sang trang xem trước → bấm **Xuất bản** để sinh viên thấy đề trên app
 
+## 3.1. Ảnh trong file Word
+
+Khi import, ảnh nhúng trong `.docx` được trích ra và lưu vào thư mục cấu hình `Uploads:Root`
+(mặc định `Backend/uploads`), đường dẫn ghi vào `RtPassageDocuments.ImagePath` dạng
+`uploads/exams/{examId}/{file}.png`. Cả web (5001) và API (5000) phục vụ thư mục này qua `/uploads`,
+nên đề có biểu mẫu/hoá đơn/tin nhắn vẫn hiển thị đúng trên web giảng viên và app sinh viên.
+
 ## 4. API chính (ABP dynamic Web API)
 
 | Method | Endpoint | Việc |
@@ -80,6 +87,7 @@ Android emulator dùng mặc định `http://10.0.2.2:5000` (không cần dart-d
 | GET | `/api/services/app/Exam/GetDetail?id=1` | Chi tiết đề + bài đọc + câu hỏi |
 | POST | `/api/services/app/Exam/ImportFromDocx` | Import file Word (base64) |
 | POST | `/api/services/app/Exam/Publish` | Xuất bản đề (`{ "id": 1 }`) |
+| POST | `/api/services/app/Exam/UpdateQuestion` | Sửa câu hỏi (nội dung, 4 phương án, đáp án, gợi ý) — web dùng form `/Exam/EditQuestion` |
 | GET | `/api/services/app/Exam/GetStudentExams?studentCode=...` | Đề đã xuất bản cho sinh viên |
 | POST | `/api/services/app/Attempt/Start` | Bắt đầu / tiếp tục bài thi |
 | POST | `/api/services/app/Attempt/SaveAnswers` | Lưu tạm đáp án |

@@ -1,6 +1,10 @@
 @model Toeic.ReadingTest.Dto.QuestionDto
-<div class="qcard">
-    <span class="q-num">Câu @Model.Number · Part @Model.Part</span>
+<div class="qcard" id="q-@Model.Number">
+    <div style="display:flex;align-items:center;gap:10px">
+        <span class="q-num">Câu @Model.Number · Part @Model.Part</span>
+        <a class="btn btn-sm btn-ghost" style="margin-left:auto"
+           asp-action="EditQuestion" asp-route-id="@ViewBag.ExamId" asp-route-questionId="@Model.Id">Sửa</a>
+    </div>
     <div class="q-stem">@Model.Stem</div>
     @foreach (var o in Model.Options)
     {

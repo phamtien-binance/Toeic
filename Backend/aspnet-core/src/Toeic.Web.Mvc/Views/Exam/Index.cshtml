@@ -55,6 +55,10 @@
                             <button class="btn btn-sm" type="submit">Thu hồi</button>
                         </form>
                     }
+                    <form method="post" asp-action="Delete" asp-route-id="@e.Id" style="display:inline"
+                          onsubmit="return confirm('Xoá đề thi này và toàn bộ câu hỏi?');">
+                        <button class="btn btn-sm btn-danger" type="submit">Xoá</button>
+                    </form>
                 </td>
             </tr>
         }

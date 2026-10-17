@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -108,6 +109,79 @@ namespace Toeic.Web.Controllers
             await _examAppService.DeleteAsync(new ExamIdInput { Id = id });
             TempData["Flash"] = "Đã xoá đề thi.";
             return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> EditQuestion(long id, long questionId)
+        {
+            var exam = await _examAppService.GetDetailAsync(id);
+            QuestionDto question = null;
+            foreach (var p in exam.Passages)
+            {
+                question = p.Questions.Find(q => q.Id == questionId);
+                if (question != null) break;
+            }
+            question ??= exam.StandaloneQuestions.Find(q => q.Id == questionId);
+            if (question == null)
+            {
+                TempData["Flash"] = "Không tìm thấy câu hỏi.";
+                return RedirectToAction("Preview", new { id });
+            }
+
+            ViewBag.Title = $"Sửa câu {question.Number}";
+            ViewBag.Active = "exams";
+            ViewBag.Subtitle = exam.Title;
+
+            return View("EditQuestion", new Toeic.Web.Models.Exam.EditQuestionViewModel
+            {
+                ExamId = exam.Id,
+                ExamTitle = exam.Title,
+                QuestionId = question.Id,
+                Number = question.Number,
+                Part = question.Part,
+                Stem = question.Stem,
+                Hint = question.Hint,
+                AnswerKey = question.AnswerKey,
+                Options = question.Options,
+                PreviousStem = question.Stem,
+                PreviousHint = question.Hint,
+                PreviousAnswerKey = question.AnswerKey
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditQuestion(
+            long id, long questionId, string stem, string hint, string answerKey,
+            string optA, string optB, string optC, string optD)
+        {
+            var texts = new[] { optA, optB, optC, optD };
+            if (texts.Any(string.IsNullOrWhiteSpace))
+            {
+                TempData["Flash"] = "Không lưu: phải có đủ nội dung 4 phương án.";
+                return RedirectToAction("EditQuestion", new { id, questionId });
+            }
+            if (string.IsNullOrWhiteSpace(stem) || string.IsNullOrWhiteSpace(hint))
+            {
+                TempData["Flash"] = "Không lưu: nội dung câu hỏi và gợi ý không được để trống.";
+                return RedirectToAction("EditQuestion", new { id, questionId });
+            }
+
+            await _examAppService.UpdateQuestionAsync(new UpdateQuestionInput
+            {
+                QuestionId = questionId,
+                Stem = stem,
+                Hint = hint,
+                AnswerKey = answerKey,
+                Options = new System.Collections.Generic.List<OptionDto>
+                {
+                    new OptionDto { Key = "A", Text = optA, OrderIndex = 0 },
+                    new OptionDto { Key = "B", Text = optB, OrderIndex = 1 },
+                    new OptionDto { Key = "C", Text = optC, OrderIndex = 2 },
+                    new OptionDto { Key = "D", Text = optD, OrderIndex = 3 }
+                }
+            });
+            TempData["Flash"] = "Đã lưu thay đổi câu hỏi.";
+            return RedirectToAction("Preview", new { id });
         }
 
         public async Task<IActionResult> Stats(long id)

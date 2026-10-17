@@ -35,8 +35,10 @@ namespace Toeic.ReadingTest
         private readonly IRepository<QuestionOption, long> _optionRepo;
         private readonly IRepository<Attempt, long> _attemptRepo;
         private readonly IRepository<AttemptAnswer, long> _answerRepo;
+        private readonly string _uploadsRoot;
 
         public ExamAppService(
+            Microsoft.Extensions.Configuration.IConfiguration configuration,
             IRepository<Exam, long> examRepo,
             IRepository<Passage, long> passageRepo,
             IRepository<PassageDocument, long> documentRepo,
@@ -52,6 +54,7 @@ namespace Toeic.ReadingTest
             _optionRepo = optionRepo;
             _attemptRepo = attemptRepo;
             _answerRepo = answerRepo;
+            _uploadsRoot = configuration["Uploads:Root"] ?? Path.Combine(Path.GetTempPath(), "toeic-uploads");
         }
 
         // ---------------------------------------------------------------- list
@@ -244,7 +247,7 @@ namespace Toeic.ReadingTest
                             PassageId = passageId,
                             DocumentType = d.Type,
                             Label = d.Label,
-                            ImagePath = d.ImageSrc,
+                            ImagePath = SaveImageAsync(examId, passage.Id, order, d),
                             OrderIndex = order++
                         });
                     }
@@ -267,6 +270,18 @@ namespace Toeic.ReadingTest
             await CurrentUnitOfWork.SaveChangesAsync();
             result.ExamId = examId;
             return result;
+        }
+
+        private string SaveImageAsync(long examId, long passageId, int order, DocxExamParser.ParsedDocument d)
+        {
+            if (d.ImageBytes == null || d.ImageBytes.Length == 0)
+                return d.ImageSrc; // ảnh do giáo viên đặt sẵn trong wwwroot/images
+
+            var dir = Path.Combine(_uploadsRoot, "exams", examId.ToString());
+            Directory.CreateDirectory(dir);
+            var fileName = $"p{passageId}_{order}{d.ImageExtension ?? ".png"}";
+            File.WriteAllBytes(Path.Combine(dir, fileName), d.ImageBytes);
+            return $"uploads/exams/{examId}/{fileName}";
         }
 
         private async Task InsertQuestionAsync(long examId, long? passageId, DocxExamParser.ParsedQuestion q)
