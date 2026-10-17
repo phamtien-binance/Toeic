@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Sơ đồ CSDL — TOEIC Reading</title>
+<style>
+  :root{
+    --blue:#1D6FE0; --blue-d:#1450B4; --blue-50:#EEF4FF; --blue-100:#DCE9FC;
+    --ink:#0F1F3D; --ink2:#33415C; --muted:#6B7A90; --line:#E3EAF5;
+    --pk:#B4690E; --fk:#1D6FE0;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#F6F9FE;font-family:"Segoe UI",Inter,system-ui,sans-serif;color:var(--ink)}
+  .wrap{width:1400px;padding:28px 30px 34px}
+  h1{font-size:22px;margin:0 0 4px;letter-spacing:-.4px}
+  .sub{color:var(--muted);font-size:12.5px;margin-bottom:18px}
+  .legend{display:flex;gap:18px;font-size:11.5px;color:var(--ink2);margin-bottom:14px;align-items:center}
+  .legend b{font-weight:700}
+  .dotpk,.dotfk{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:5px;vertical-align:middle}
+  .dotpk{background:var(--pk)} .dotfk{background:var(--fk)}
+  #stage{position:relative;height:945px}
+  svg#links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1}
+  .card{position:absolute;width:310px;background:#fff;border:1px solid var(--line);border-radius:12px;
+        box-shadow:0 8px 22px rgba(16,35,70,.07);overflow:hidden;z-index:2}
+  .card header{display:flex;align-items:center;gap:8px;padding:10px 12px;background:linear-gradient(120deg,#2E7BEA,#1450B4);color:#fff}
+  .card header .t{font-size:13px;font-weight:700;letter-spacing:.2px}
+  .card header .n{margin-left:auto;font-size:10px;background:rgba(255,255,255,.2);padding:2px 7px;border-radius:99px}
+  ul{list-style:none;margin:0;padding:6px 0}
+  li{display:flex;align-items:center;gap:7px;padding:3.5px 12px;font-size:11.4px;line-height:1.35}
+  li:nth-child(odd){background:#FBFDFF}
+  li .c{font-weight:600;color:var(--ink2)}
+  li .ty{margin-left:auto;color:var(--muted);font-size:10px;font-variant-numeric:tabular-nums}
+  li.pk .c{color:var(--pk)} li.fk .c{color:var(--fk)}
+  li .badge{font-size:8.5px;font-weight:700;padding:1px 4px;border-radius:4px;letter-spacing:.3px}
+  li.pk .badge{background:#FEF3E2;color:#8A4B06}
+  li.fk .badge{background:var(--blue-50);color:var(--blue-d)}
+  .lbl{position:absolute;z-index:3;background:#fff;border:1px solid var(--line);border-radius:999px;
+       padding:2px 8px;font-size:10px;color:var(--ink2);box-shadow:0 2px 6px rgba(16,35,70,.06)}
+  .note{margin-top:18px;font-size:11.5px;color:var(--ink2);display:grid;grid-template-columns:1fr 1fr;gap:6px 26px}
+  .note div{padding-left:14px;position:relative}
+  .note div:before{content:"•";position:absolute;left:2px;color:var(--blue)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sơ đồ cơ sở dữ liệu — TOEIC Reading</h1>
+  <div class="sub">SQL Server · database <b>ToeicDb</b> · 7 bảng nghiệp vụ (Rt*), khoá ngoài theo quan hệ 1–n</div>
+  <div class="legend">
+    <span><i class="dotpk"></i><b>PK</b> khoá chính</span>
+    <span><i class="dotfk"></i><b>FK</b> khoá ngoại</span>
+    <span>Question.PassageId <b>NULL</b> = câu độc lập Part 5</span>
+  </div>
+
+  <div id="stage">
+    <svg id="links"></svg>
+
+    <div class="card" id="exams" style="left:0;top:0">
+      <header><span class="t">RtExams</span><span class="n">đề thi</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li><span class="c">Title</span><span class="ty">nvarchar(256)</span></li>
+        <li><span class="c">DurationMinutes</span><span class="ty">int</span></li>
+        <li><span class="c">TotalQuestions</span><span class="ty">int</span></li>
+        <li><span class="c">Status</span><span class="ty">int (enum)</span></li>
+        <li><span class="c">SourceFile</span><span class="ty">nvarchar(256)</span></li>
+        <li><span class="c">OpenAt / CloseAt</span><span class="ty">datetime2</span></li>
+        <li><span class="c">ShuffleQuestions</span><span class="ty">bit</span></li>
+        <li><span class="c">ShuffleOptions</span><span class="ty">bit</span></li>
+        <li><span class="c">PublishedAt</span><span class="ty">datetime2</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="passages" style="left:430px;top:0">
+      <header><span class="t">RtPassages</span><span class="n">bài đọc</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">ExamId</span><span class="ty">→ RtExams</span></li>
+        <li><span class="c">GroupCode</span><span class="ty">nvarchar(64)</span></li>
+        <li><span class="c">Part</span><span class="ty">int (6/7)</span></li>
+        <li><span class="c">PassageType</span><span class="ty">nvarchar(64)</span></li>
+        <li><span class="c">Header</span><span class="ty">nvarchar(512)</span></li>
+        <li><span class="c">OrderIndex</span><span class="ty">int</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="documents" style="left:860px;top:0">
+      <header><span class="t">RtPassageDocuments</span><span class="n">thành phần</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">PassageId</span><span class="ty">→ RtPassages</span></li>
+        <li><span class="c">DocumentType</span><span class="ty">text / image</span></li>
+        <li><span class="c">Label</span><span class="ty">nvarchar(256)</span></li>
+        <li><span class="c">Text</span><span class="ty">nvarchar(max)</span></li>
+        <li><span class="c">ImagePath</span><span class="ty">uploads/exams/…</span></li>
+        <li><span class="c">OrderIndex</span><span class="ty">int</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="questions" style="left:430px;top:300px">
+      <header><span class="t">RtQuestions</span><span class="n">câu hỏi</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">ExamId</span><span class="ty">→ RtExams</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">PassageId</span><span class="ty">nullable</span></li>
+        <li><span class="c">Number</span><span class="ty">int 101–200</span></li>
+        <li><span class="c">Part</span><span class="ty">int 5/6/7</span></li>
+        <li><span class="c">Stem</span><span class="ty">nvarchar(max)</span></li>
+        <li><span class="c">AnswerKey</span><span class="ty">nvarchar(4) A–D</span></li>
+        <li><span class="c">Hint</span><span class="ty">nvarchar(max)</span></li>
+        <li><span class="c">ShuffleQuestions</span><span class="ty">yes / group</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="options" style="left:860px;top:300px">
+      <header><span class="t">RtQuestionOptions</span><span class="n">phương án</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">QuestionId</span><span class="ty">→ RtQuestions</span></li>
+        <li><span class="c">OptionKey</span><span class="ty">A / B / C / D</span></li>
+        <li><span class="c">Text</span><span class="ty">nvarchar(max)</span></li>
+        <li><span class="c">OrderIndex</span><span class="ty">int</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="attempts" style="left:0;top:640px">
+      <header><span class="t">RtAttempts</span><span class="n">lượt làm bài</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">ExamId</span><span class="ty">→ RtExams</span></li>
+        <li><span class="c">StudentCode</span><span class="ty">nvarchar(64)</span></li>
+        <li><span class="c">StudentName</span><span class="ty">nvarchar(128)</span></li>
+        <li><span class="c">StartedAt / SubmittedAt</span><span class="ty">datetime2</span></li>
+        <li><span class="c">Status</span><span class="ty">int (enum)</span></li>
+        <li><span class="c">Score / Correct / Wrong / Skipped</span><span class="ty">int</span></li>
+        <li><span class="c">DurationSeconds</span><span class="ty">int</span></li>
+      </ul>
+    </div>
+
+    <div class="card" id="answers" style="left:430px;top:700px">
+      <header><span class="t">RtAttemptAnswers</span><span class="n">đáp án đã chọn</span></header>
+      <ul>
+        <li class="pk"><span class="badge">PK</span><span class="c">Id</span><span class="ty">bigint</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">AttemptId</span><span class="ty">→ RtAttempts</span></li>
+        <li class="fk"><span class="badge">FK</span><span class="c">QuestionId</span><span class="ty">→ RtQuestions</span></li>
+        <li><span class="c">SelectedKey</span><span class="ty">A–D / NULL</span></li>
+        <li><span class="c">IsCorrect</span><span class="ty">bit</span></li>
+        <li><span class="c">AnsweredAt</span><span class="ty">datetime2</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="note">
+    <div><b>1 đề → n bài đọc</b> (RtPassages.ExamId), mỗi bài đọc có nhiều thành phần văn bản/ảnh.</div>
+    <div><b>1 đề → n câu hỏi</b> (RtQuestions.ExamId); câu Part 5 để PassageId = NULL.</div>
+    <div><b>1 bài đọc → n câu hỏi</b> (RtQuestions.PassageId) — câu Part 6/7 gắn bài đọc.</div>
+    <div><b>1 câu → 4 phương án</b>; AnswerKey trỏ tới OptionKey nên hoán vị vẫn đúng.</div>
+    <div><b>1 đề → n lượt làm</b> (RtAttempts.ExamId); mỗi lượt có nhiều dòng đáp án.</div>
+    <div><b>1 lượt × 1 câu = 1 dòng</b> (unique AttemptId+QuestionId); không có dòng = bỏ qua.</div>
+  </div>
+</div>
+
+<script>
+  const stage = document.getElementById('stage');
+  const svg = document.getElementById('links');
+  const NS = 'http://www.w3.org/2000/svg';
+
+  const rel = [
+    { from:'exams',     fs:'right', to:'passages',  ts:'left',  label:'1 : n' },
+    { from:'passages',  fs:'right', to:'documents', ts:'left',  label:'1 : n' },
+    { from:'exams',     fs:'bottom', to:'questions', ts:'left', label:'1 : n' },
+    { from:'passages',  fs:'bottom', to:'questions', ts:'top',  label:'1 : n' },
+    { from:'questions', fs:'right', to:'options',   ts:'left',  label:'1 : 4' },
+    { from:'exams',     fs:'right', to:'attempts',  ts:'left',  label:'1 : n' },
+    { from:'attempts',  fs:'right', to:'answers',   ts:'left',  label:'1 : n' },
+    { from:'questions', fs:'bottom', to:'answers',  ts:'right', label:'1 : n' },
+  ];
+
+  function anchor(el, side) {
+    const r = el.getBoundingClientRect(), s = stage.getBoundingClientRect();
+    const x = r.left - s.left, y = r.top - s.top;
+    switch (side) {
+      case 'left':   return [x, y + r.height / 2];
+      case 'right':  return [x + r.width, y + r.height / 2];
+      case 'top':    return [x + r.width / 2, y];
+      default:       return [x + r.width / 2, y + r.height];
+    }
+  }
+
+  function draw(p1, p2, label) {
+    const [x1, y1] = p1, [x2, y2] = p2;
+    const dx = Math.max(40, Math.abs(x2 - x1) * 0.45);
+    let d;
+    if (Math.abs(y1 - y2) < 6) {
+      d = `M ${x1} ${y1} L ${x2} ${y2}`;
+    } else if (Math.abs(x1 - x2) < 6) {
+      d = `M ${x1} ${y1} L ${x2} ${y2}`;
+    } else {
+      const mx = (x1 + x2) / 2;
+      d = `M ${x1} ${y1} C ${mx} ${y1}, ${mx} ${y2}, ${x2} ${y2}`;
+    }
+    const path = document.createElementNS(NS, 'path');
+    path.setAttribute('d', d);
+    path.setAttribute('fill', 'none');
+    path.setAttribute('stroke', '#9FB6D8');
+    path.setAttribute('stroke-width', '1.6');
+    path.setAttribute('marker-end', 'url(#arrow)');
+    svg.appendChild(path);
+
+    const pill = document.createElement('div');
+    pill.className = 'lbl';
+    pill.textContent = label;
+    pill.style.left = ((x1 + x2) / 2 - 14) + 'px';
+    pill.style.top  = ((y1 + y2) / 2 - 9) + 'px';
+    stage.appendChild(pill);
+  }
+
+  const defs = document.createElementNS(NS, 'defs');
+  defs.innerHTML = `<marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9FB6D8"/></marker>`;
+  svg.appendChild(defs);
+
+  requestAnimationFrame(() => {
+    rel.forEach(r => {
+      const a = anchor(document.getElementById(r.from), r.fs);
+      const b = anchor(document.getElementById(r.to), r.ts);
+      draw(a, b, r.label);
+    });
+  });
+</script>
+</body>
+</html>
