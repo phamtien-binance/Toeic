@@ -112,7 +112,7 @@ nên đề có biểu mẫu/hoá đơn/tin nhắn vẫn hiển thị đúng trê
 
 ## 7. Link nộp bài
 
-- Figma (12 frame, 2 page): https://www.figma.com/design/Yn5o5kAnlpF0TqFaq1dr6k/Untitled
+- Figma (12 frame, 2 page): https://www.figma.com/design/Yn5o5kAnlpF0TqFaq1dr6k — file “TOEIC Reading – Thiết kế UI (Web + Mobile)”
 - Báo cáo: `Files/BaoCao_TOEIC_Reading.docx` (kèm bản PDF)
 - Kịch bản quay demo: `Files/KichBan_Demo.md`
 - Repository: `git log` trong thư mục này (commit đầu tiên chứa toàn bộ source + files)
