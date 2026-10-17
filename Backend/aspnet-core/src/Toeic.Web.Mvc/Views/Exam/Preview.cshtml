@@ -1,0 +1,117 @@
+@model Toeic.ReadingTest.Dto.ExamDetailDto
+@{
+    Layout = "~/Views/Shared/_ExamLayout.cshtml";
+}
+@section TopActions {
+    <span class="badge @(Model.Status == "Published" ? "badge-green" : "badge-amber")">
+        @(Model.Status == "Published" ? "Đã xuất bản" : Model.Status == "Draft" ? "Bản nháp" : "Chờ xuất bản")
+    </span>
+    @if (Model.Status != "Published")
+    {
+        <form method="post" asp-action="Publish" asp-route-id="@Model.Id" style="display:inline">
+            <button class="btn btn-primary btn-sm" type="submit">Xuất bản đề thi</button>
+        </form>
+    }
+    else
+    {
+        <form method="post" asp-action="Unpublish" asp-route-id="@Model.Id" style="display:inline">
+            <button class="btn btn-sm" type="submit">Thu hồi</button>
+        </form>
+    }
+    <a class="btn btn-sm" asp-action="Stats" asp-route-id="@Model.Id">Thống kê</a>
+}
+
+@if (TempData["Flash"] != null)
+{
+    <div class="alert alert-ok">@TempData["Flash"]</div>
+}
+
+<div class="split">
+    <div>
+        @foreach (var passage in Model.Passages)
+        {
+            <div class="card" style="margin-bottom:14px">
+                <div class="card-head">
+                    <div class="card-title">Nhóm câu @passage.Questions.FirstOrDefault()?.Number–@passage.Questions.LastOrDefault()?.Number</div>
+                    <span class="badge badge-blue" style="margin-left:auto">@passage.PassageType</span>
+                    <span class="badge badge-grey">Group @passage.GroupCode</span>
+                </div>
+                <div class="card-body">
+                    <div class="passage">
+                        @if (!string.IsNullOrWhiteSpace(passage.Header))
+                        {
+                            <h4>@passage.Header</h4>
+                        }
+                        @foreach (var doc in passage.Documents)
+                        {
+                            if (doc.DocumentType == "image")
+                            {
+                                <div class="figure">
+                                    <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px">@doc.Label</div>
+                                    @if (!string.IsNullOrWhiteSpace(doc.ImagePath))
+                                    {
+                                        <img src="/@doc.ImagePath" alt="@doc.Label" onerror="this.style.display='none'" />
+                                    }
+                                </div>
+                            }
+                            else
+                            {
+                                <p>@doc.Text</p>
+                            }
+                        }
+                    </div>
+
+                    @foreach (var q in passage.Questions)
+                    {
+                        <partial name="_QuestionCard" model="q" />
+                    }
+                </div>
+            </div>
+        }
+
+        @if (Model.StandaloneQuestions.Count > 0)
+        {
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Part 5 · Câu độc lập</div>
+                    <span class="badge badge-blue" style="margin-left:auto">@Model.StandaloneQuestions.Count câu</span>
+                </div>
+                <div class="card-body">
+                    @foreach (var q in Model.StandaloneQuestions)
+                    {
+                        <partial name="_QuestionCard" model="q" />
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:14px;position:sticky;top:82px">
+        <div class="card">
+            <div class="card-head"><div class="card-title">Thông tin đề</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:10px;font-size:12.5px;color:var(--ink-2)">
+                <div><b>@Model.Title</b></div>
+                <div class="exam-meta">@Model.TotalQuestions câu · @Model.DurationMinutes phút</div>
+                <div class="exam-meta">File nguồn: @(Model.SourceFile ?? "—")</div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px">
+                    <span class="badge badge-green">✔ Đủ đáp án</span>
+                    <span class="badge badge-green">✔ Đủ gợi ý</span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-head"><div class="card-title">Mục lục</div></div>
+            <div class="card-body toc">
+                @foreach (var passage in Model.Passages)
+                {
+                    <a href="#">Part @passage.Part · @passage.GroupCode <span>@passage.Questions.Count câu</span></a>
+                }
+                @if (Model.StandaloneQuestions.Count > 0)
+                {
+                    <a href="#">Part 5 · 101–130 <span>@Model.StandaloneQuestions.Count câu</span></a>
+                }
+            </div>
+        </div>
+        <div class="alert alert-info">Rà soát chính tả và hình ảnh trước khi xuất bản. Đề đã xuất bản vẫn có thể thu hồi.</div>
+    </div>
+</div>

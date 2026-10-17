@@ -1,0 +1,104 @@
+@model Toeic.ReadingTest.Dto.ImportExamInput
+@{
+    Layout = "~/Views/Shared/_ExamLayout.cshtml";
+    var result = ViewBag.Result as Toeic.ReadingTest.Dto.ImportResultDto;
+}
+@section TopActions {
+    <a class="btn btn-sm" asp-action="Index">← Danh sách đề</a>
+}
+
+<div class="split">
+    <div style="display:flex;flex-direction:column;gap:18px">
+        <form method="post" enctype="multipart/form-data" asp-action="Import">
+            <div class="drop">
+                <div class="drop-ic">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+                    </svg>
+                </div>
+                <b>Chọn file .docx có bộ thẻ HERMES-EXAM-TAG</b>
+                <span>Tối đa 20 MB · file sai định dạng sẽ bị chặn, không lưu vào CSDL</span>
+                <input type="file" name="file" accept=".docx" required
+                       style="margin-top:12px;font-size:12.5px" />
+                <div style="display:flex;gap:10px;margin-top:14px">
+                    <div class="field" style="width:220px">
+                        <label>Tên đề (tuỳ chọn)</label>
+                        <input class="input" name="Title" value="@Model?.Title" placeholder="VD: TOEIC Reading Test 3" />
+                    </div>
+                    <div class="field" style="width:150px">
+                        <label>Thời gian (phút)</label>
+                        <input class="input" name="DurationMinutes" type="number" value="@(Model?.DurationMinutes ?? 75)" />
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit" style="margin-top:16px">Import đề thi</button>
+            </div>
+        </form>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-err"><div><b>@ViewBag.Error</b></div></div>
+        }
+
+        @if (result != null)
+        {
+            <div class="card">
+                <div class="card-head">
+                    <div class="card-title">Kết quả kiểm tra file</div>
+                    <span class="badge @(result.Success ? "badge-green" : "badge-amber")" style="margin-left:auto">
+                        @(result.Success ? "Hợp lệ" : "Có lỗi")
+                    </span>
+                </div>
+                <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+                    <div class="file-row">
+                        <div class="file-ic">DOCX</div>
+                        <div style="flex:1">
+                            <div style="font-weight:650;font-size:13px">@ViewBag.FileName</div>
+                            <div class="exam-meta">@(Math.Round((double)ViewBag.FileSize / 1024)) KB · @result.QuestionCount câu · @result.PassageCount bài đọc · @result.ImageCount hình</div>
+                        </div>
+                    </div>
+
+                    @if (result.Errors.Count > 0)
+                    {
+                        <div class="alert alert-err">
+                            <div>
+                                <b>Phát hiện @result.Errors.Count lỗi — file chưa được lưu.</b>
+                                <ul style="margin:8px 0 0;padding-left:18px;line-height:1.7">
+                                    @foreach (var err in result.Errors.Take(12))
+                                    {
+                                        <li>@err.Message</li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-ok"><div><b>File đúng chuẩn 100%</b> — có thể xuất bản để sinh viên làm bài.</div></div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:18px">
+        <div class="card">
+            <div class="card-head"><div class="card-title">Bộ thẻ bắt buộc</div></div>
+            <div class="card-body" style="font-size:12.5px;line-height:1.9;color:var(--ink-2)">
+                <div><b>DOC</b> · version, schema</div>
+                <div><b>PART</b> · n, questions</div>
+                <div><b>GROUP</b> · id, passage</div>
+                <div><b>PASSAGE</b> · id, type</div>
+                <div><b>Q · OPT · ANS · HINT</b> · key, lang</div>
+                <div style="margin-top:10px;color:var(--muted)">Thiếu bất kỳ thẻ nào ở trên, toàn bộ file bị hủy và không ghi vào CSDL.</div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-head"><div class="card-title">Quy tắc hoán vị</div></div>
+            <div class="card-body" style="font-size:12.5px;line-height:1.75;color:var(--ink-2)">
+                <p style="margin:0 0 8px"><b style="color:var(--blue-700)">shuffle_questions = yes</b><br>Câu độc lập (Part 5) — trộn từng câu.</p>
+                <p style="margin:0 0 8px"><b style="color:var(--blue-700)">shuffle_questions = group</b><br>Trộn cả nhóm, giữ bài đọc đi kèm.</p>
+                <p style="margin:0"><b style="color:var(--blue-700)">shuffle_options = yes</b><br>Đổi vị trí A–D nhưng giữ key, đáp án không bao giờ lệch.</p>
+            </div>
+        </div>
+    </div>
+</div>

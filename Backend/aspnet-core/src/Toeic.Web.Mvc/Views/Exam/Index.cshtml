@@ -1,0 +1,69 @@
+@model System.Collections.Generic.List<Toeic.ReadingTest.Dto.ExamListDto>
+@{
+    Layout = "~/Views/Shared/_ExamLayout.cshtml";
+}
+@section TopActions {
+    <a class="btn btn-sm" asp-action="Import">Import từ Word</a>
+    <a class="btn btn-primary btn-sm" asp-action="Import">+ Tạo đề mới</a>
+}
+
+@if (TempData["Flash"] != null)
+{
+    <div class="alert alert-ok">@TempData["Flash"]</div>
+}
+
+<div class="card">
+    <table>
+        <thead>
+        <tr>
+            <th style="width:32%">Đề thi</th>
+            <th>Câu</th>
+            <th>Thời gian</th>
+            <th>Lượt làm</th>
+            <th>Điểm TB</th>
+            <th>Trạng thái</th>
+            <th style="text-align:right">Thao tác</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var e in Model)
+        {
+            var badge = e.Status == "Published" ? "badge-green" : e.Status == "Draft" ? "badge-grey" : "badge-amber";
+            var label = e.Status == "Published" ? "Đã xuất bản" : e.Status == "Draft" ? "Bản nháp" : "Chờ xuất bản";
+            <tr>
+                <td>
+                    <div class="exam-name">@e.Title</div>
+                    <div class="exam-meta">@(e.SourceFile ?? "Chưa có file nguồn") · @e.CreationTime.ToString("dd/MM/yyyy")</div>
+                </td>
+                <td class="mono">@e.TotalQuestions</td>
+                <td class="mono">@e.DurationMinutes phút</td>
+                <td class="mono">@(e.AttemptCount == 0 ? "—" : e.AttemptCount.ToString())</td>
+                <td class="mono">@(e.AverageScore == 0 ? "—" : e.AverageScore.ToString("0.#"))</td>
+                <td><span class="badge @badge"><span class="dot"></span>@label</span></td>
+                <td style="text-align:right;white-space:nowrap">
+                    <a class="btn btn-sm" asp-action="Preview" asp-route-id="@e.Id">Xem trước</a>
+                    <a class="btn btn-sm btn-ghost" asp-action="Stats" asp-route-id="@e.Id">Thống kê</a>
+                    @if (e.Status != "Published")
+                    {
+                        <form method="post" asp-action="Publish" asp-route-id="@e.Id" style="display:inline">
+                            <button class="btn btn-sm btn-primary" type="submit">Xuất bản</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form method="post" asp-action="Unpublish" asp-route-id="@e.Id" style="display:inline">
+                            <button class="btn btn-sm" type="submit">Thu hồi</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        @if (Model.Count == 0)
+        {
+            <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px">
+                Chưa có đề thi nào. Bắt đầu bằng cách import file Word có bộ thẻ.
+            </td></tr>
+        }
+        </tbody>
+    </table>
+</div>

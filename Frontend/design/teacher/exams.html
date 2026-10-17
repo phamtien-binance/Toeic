@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Đề thi — TOEIC Reading</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">TR</div><div><div class="brand-name">TOEIC Reading</div><div class="brand-sub">Exam Studio</div></div></div>
+    <div class="nav-label">Quản lý đề thi</div>
+    <a class="nav-item" href="dashboard.html"><span class="ic">▦</span> Tổng quan</a>
+    <a class="nav-item active" href="exams.html"><span class="ic">▤</span> Đề thi</a>
+    <a class="nav-item" href="import.html"><span class="ic">⇪</span> Import từ Word</a>
+    <a class="nav-item" href="preview.html"><span class="ic">◎</span> Xem trước &amp; sửa</a>
+    <div class="nav-label">Phân tích</div>
+    <a class="nav-item" href="stats.html"><span class="ic">◔</span> Thống kê</a>
+    <a class="nav-item" href="#"><span class="ic">☰</span> Ngân hàng câu hỏi</a>
+    <div class="nav-label">Hệ thống</div>
+    <a class="nav-item" href="#"><span class="ic">⚙</span> Cài đặt</a>
+    <div class="sidebar-foot"><div class="avatar">TH</div><div class="who">Trần Thu Hà<small>Giảng viên · Tiếng Anh</small></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Đề thi</div>
+      <div class="page-sub">9 đề · 6 đã xuất bản</div>
+      <a class="btn btn-sm" href="import.html">⇪ Import từ Word</a>
+      <a class="btn btn-primary btn-sm" href="import.html">+ Tạo đề mới</a>
+    </div>
+
+    <div class="content">
+      <div style="display:flex;gap:12px;align-items:center">
+        <div class="seg"><b class="on">Tất cả (9)</b><b>Đã xuất bản (6)</b><b>Chờ xuất bản (2)</b><b>Bản nháp (1)</b></div>
+        <input class="input" placeholder="Tìm theo tên đề..." style="max-width:280px;margin-left:auto;height:38px">
+        <button class="btn btn-sm">Sắp xếp: Mới nhất</button>
+      </div>
+
+      <div class="card">
+        <table>
+          <thead>
+            <tr><th style="width:34%">Đề thi</th><th>Phần</th><th>Câu</th><th>Thời gian</th><th>Lượt làm</th><th>Điểm TB</th><th>Trạng thái</th><th style="text-align:right">Thao tác</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="exam-name">TOEIC Reading Test 3</div>
+                <div class="exam-meta">TOEIC_Reading_Test3_Tagged.docx · Import 17/10/2026</div>
+              </td>
+              <td><span class="badge badge-blue">5 · 6 · 7</span></td>
+              <td class="mono">100</td><td class="mono">75 phút</td><td class="mono">412</td><td class="mono">74</td>
+              <td><span class="badge badge-green"><span class="dot"></span>Đã xuất bản</span></td>
+              <td style="text-align:right;white-space:nowrap">
+                <a class="btn btn-sm" href="preview.html">Xem trước</a>
+                <a class="btn btn-sm btn-ghost" href="stats.html">Thống kê</a>
+              </td>
+            </tr>
+            <tr>
+              <td><div class="exam-name">Reading Mini Test — Part 5</div><div class="exam-meta">Mini_Part5.docx · Import 15/10/2026</div></td>
+              <td><span class="badge badge-blue">5</span></td>
+              <td class="mono">30</td><td class="mono">20 phút</td><td class="mono">208</td><td class="mono">81</td>
+              <td><span class="badge badge-green"><span class="dot"></span>Đã xuất bản</span></td>
+              <td style="text-align:right;white-space:nowrap"><a class="btn btn-sm" href="preview.html">Xem trước</a><a class="btn btn-sm btn-ghost" href="stats.html">Thống kê</a></td>
+            </tr>
+            <tr>
+              <td><div class="exam-name">Reading Test 2 — Part 6 &amp; 7</div><div class="exam-meta">Reading_Test2.docx · Import 12/10/2026</div></td>
+              <td><span class="badge badge-blue">6 · 7</span></td>
+              <td class="mono">70</td><td class="mono">55 phút</td><td class="mono">—</td><td class="mono">—</td>
+              <td><span class="badge badge-amber"><span class="dot"></span>Chờ xuất bản</span></td>
+              <td style="text-align:right;white-space:nowrap"><a class="btn btn-sm" href="preview.html">Xem trước</a><a class="btn btn-sm btn-primary">Xuất bản</a></td>
+            </tr>
+            <tr>
+              <td><div class="exam-name">Đề giữa kỳ — Reading v03</div><div class="exam-meta">Đang soạn · Chưa import file Word</div></td>
+              <td><span class="badge badge-grey">—</span></td>
+              <td class="mono">100</td><td class="mono">75 phút</td><td class="mono">—</td><td class="mono">—</td>
+              <td><span class="badge badge-grey"><span class="dot"></span>Bản nháp</span></td>
+              <td style="text-align:right;white-space:nowrap"><a class="btn btn-sm" href="import.html">Import Word</a><a class="btn btn-sm btn-danger">Xóa</a></td>
+            </tr>
+            <tr>
+              <td><div class="exam-name">Reading Test 1 — Full</div><div class="exam-meta">Reading_Test1.docx · Import 02/10/2026</div></td>
+              <td><span class="badge badge-blue">5 · 6 · 7</span></td>
+              <td class="mono">100</td><td class="mono">75 phút</td><td class="mono">664</td><td class="mono">69</td>
+              <td><span class="badge badge-green"><span class="dot"></span>Đã xuất bản</span></td>
+              <td style="text-align:right;white-space:nowrap"><a class="btn btn-sm" href="preview.html">Xem trước</a><a class="btn btn-sm btn-ghost" href="stats.html">Thống kê</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><div class="card-title">Xuất bản đề thi</div><span class="badge badge-amber" style="margin-left:auto">Chỉ đề đã xuất bản mới hiện trên app sinh viên</span></div>
+        <div class="card-body" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+          <div class="field"><label>Mở ca thi</label><input class="input" value="17/10/2026 08:00" readonly></div>
+          <div class="field"><label>Đóng ca thi</label><input class="input" value="24/10/2026 23:59" readonly></div>
+          <div class="field"><label>Số lần làm tối đa</label><input class="input" value="1 lần / sinh viên" readonly></div>
+          <div style="grid-column:1/-1;display:flex;gap:10px;align-items:center">
+            <label style="display:flex;gap:8px;align-items:center;font-size:12.5px"><input type="checkbox" checked> Hoán vị câu hỏi theo nhóm</label>
+            <label style="display:flex;gap:8px;align-items:center;font-size:12.5px"><input type="checkbox" checked> Hoán vị phương án trả lời</label>
+            <button class="btn btn-primary" style="margin-left:auto">Lưu &amp; xuất bản đề đang chọn</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

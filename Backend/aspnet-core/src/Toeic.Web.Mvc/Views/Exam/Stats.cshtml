@@ -1,0 +1,64 @@
+@model Toeic.ReadingTest.Dto.ExamStatsDto
+@{
+    Layout = "~/Views/Shared/_ExamLayout.cshtml";
+}
+@section TopActions {
+    <a class="btn btn-sm" asp-action="Preview" asp-route-id="@Model.ExamId">← Xem đề</a>
+}
+
+<div class="kpis">
+    <div class="kpi">
+        <div class="kpi-label">Lượt làm bài</div>
+        <div class="kpi-value">@Model.AttemptCount</div>
+        <div class="kpi-foot">@Model.SubmittedCount bài đã nộp</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Điểm trung bình</div>
+        <div class="kpi-value">@Model.AverageScore.ToString("0.#")<small>/100</small></div>
+        <div class="kpi-foot">Toàn bộ bài nộp</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Điểm cao nhất</div>
+        <div class="kpi-value">@Model.HighestScore</div>
+        <div class="kpi-foot">Thang điểm 100</div>
+    </div>
+    <div class="kpi">
+        <div class="kpi-label">Thời gian làm bài TB</div>
+        <div class="kpi-value">@Model.AverageDurationMinutes.ToString("0.#")<small> phút</small></div>
+        <div class="kpi-foot">Tính trên bài đã nộp</div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-head">
+        <div class="card-title">Top 10 câu hỏi nhiều sinh viên làm sai nhất</div>
+        <span class="badge badge-grey" style="margin-left:auto">@Model.SubmittedCount bài nộp</span>
+    </div>
+    <table>
+        <thead>
+        <tr><th style="width:70px">Câu</th><th>Part</th><th style="width:90px">Đáp án</th><th style="width:240px">Tỉ lệ sai</th><th style="width:160px">Nhiễu nhiều nhất</th><th style="width:90px">Số câu sai</th></tr>
+        </thead>
+        <tbody>
+        @foreach (var s in Model.TopWrongQuestions)
+        {
+            var cls = s.WrongRate >= 60 ? "bad" : s.WrongRate >= 40 ? "warn" : "";
+            <tr>
+                <td class="mono"><b>@s.Number</b></td>
+                <td>Part @s.Part</td>
+                <td><span class="badge badge-green">@s.AnswerKey</span></td>
+                <td>
+                    <div class="bar @cls"><i style="width:@(Math.Min(100, s.WrongRate))%"></i></div>
+                </td>
+                <td class="mono">@(s.MostChosenWrongKey ?? "—")</td>
+                <td class="mono">@s.WrongAnswers</td>
+            </tr>
+        }
+        @if (Model.TopWrongQuestions.Count == 0)
+        {
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:28px">
+                Chưa có dữ liệu — cần ít nhất một bài nộp để thống kê.
+            </td></tr>
+        }
+        </tbody>
+    </table>
+</div>

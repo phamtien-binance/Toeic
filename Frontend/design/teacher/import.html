@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Import đề thi từ Word — TOEIC Reading</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand"><div class="brand-mark">TR</div><div><div class="brand-name">TOEIC Reading</div><div class="brand-sub">Exam Studio</div></div></div>
+    <div class="nav-label">Quản lý đề thi</div>
+    <a class="nav-item" href="dashboard.html"><span class="ic">▦</span> Tổng quan</a>
+    <a class="nav-item" href="exams.html"><span class="ic">▤</span> Đề thi</a>
+    <a class="nav-item active" href="import.html"><span class="ic">⇪</span> Import từ Word</a>
+    <a class="nav-item" href="preview.html"><span class="ic">◎</span> Xem trước &amp; sửa</a>
+    <div class="nav-label">Phân tích</div>
+    <a class="nav-item" href="stats.html"><span class="ic">◔</span> Thống kê</a>
+    <a class="nav-item" href="#"><span class="ic">☰</span> Ngân hàng câu hỏi</a>
+    <div class="nav-label">Hệ thống</div>
+    <a class="nav-item" href="#"><span class="ic">⚙</span> Cài đặt</a>
+    <div class="sidebar-foot"><div class="avatar">TH</div><div class="who">Trần Thu Hà<small>Giảng viên · Tiếng Anh</small></div></div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Import đề thi từ Word</div>
+      <div class="page-sub">Chỉ nhận file .docx có bộ thẻ HERMES-EXAM-TAG 1.0</div>
+      <a class="btn btn-sm" href="exams.html">← Danh sách đề</a>
+    </div>
+
+    <div class="content">
+      <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:18px;align-items:start">
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="drop">
+            <div class="drop-ic">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 16V4m0 0L7 9m5-5 5 5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+              </svg>
+            </div>
+            <b>Kéo thả file .docx vào đây</b>
+            <span>hoặc chọn file từ máy · tối đa 20 MB</span>
+            <button class="btn btn-primary btn-sm" style="margin-top:8px">Chọn file Word</button>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title">File đang xử lý</div><span class="badge badge-blue" style="margin-left:auto">Đã đọc xong</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+              <div class="file-row">
+                <div class="file-ic">DOCX</div>
+                <div style="flex:1;min-width:0">
+                  <div style="font-weight:650;font-size:13px">TOEIC_Reading_Test3_Tagged.docx</div>
+                  <div class="exam-meta">2,4 MB · 38 trang · 19 bài đọc · 7 hình ảnh</div>
+                </div>
+                <button class="btn btn-sm">Đổi file</button>
+              </div>
+
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
+                <div class="kpi" style="box-shadow:none"><div class="kpi-label">Câu hỏi</div><div class="kpi-value" style="font-size:22px">100</div></div>
+                <div class="kpi" style="box-shadow:none"><div class="kpi-label">Part 5 / 6 / 7</div><div class="kpi-value" style="font-size:22px">30·16·54</div></div>
+                <div class="kpi" style="box-shadow:none"><div class="kpi-label">Đáp án</div><div class="kpi-value" style="font-size:22px">100</div></div>
+                <div class="kpi" style="box-shadow:none"><div class="kpi-label">Gợi ý</div><div class="kpi-value" style="font-size:22px">100</div></div>
+              </div>
+
+              <div class="alert alert-err">
+                <div>
+                  <b>Phát hiện 3 lỗi — file chưa được lưu vào CSDL.</b>
+                  <div style="margin-top:6px">Sửa các lỗi dưới đây trong file Word rồi upload lại. Hệ thống chỉ lưu khi file đúng 100% chuẩn.</div>
+                  <ul style="margin:8px 0 0;padding-left:18px;line-height:1.7">
+                    <li>Câu <b>142</b>: thiếu thẻ đáp án (ANS) — không xác định được phương án đúng.</li>
+                    <li>Câu <b>168</b>: có 5 phương án (OPT), yêu cầu đúng 4.</li>
+                    <li>Câu <b>190</b>: sai số thứ tự — mong đợi 190, tìm thấy 191.</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="alert alert-ok">
+                <div><b>Phần đã đạt chuẩn:</b> 97/100 câu đúng cấu trúc, 19/19 bài đọc có ID hợp lệ, 7/7 hình ảnh tìm thấy trong thư mục images/.</div>
+              </div>
+
+              <div style="display:flex;gap:10px">
+                <button class="btn" style="flex:1">Tải báo cáo lỗi (.xlsx)</button>
+                <button class="btn btn-primary" style="flex:1" disabled>Lưu đề thi (bị chặn do còn lỗi)</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-head"><div class="card-title">Trạng thái từng bước</div></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+              <div class="mrow"><span class="badge badge-green">1</span><div style="flex:1"><b style="font-size:13px">Đọc file &amp; tách thẻ</b><div class="exam-meta">Hoàn tất trong 1,8s</div></div><span class="badge badge-green">OK</span></div>
+              <div class="mrow"><span class="badge badge-green">2</span><div style="flex:1"><b style="font-size:13px">Kiểm tra cấu trúc Tag / Part / Group</b><div class="exam-meta">19 nhóm, 100 câu, 4 phương án mỗi câu</div></div><span class="badge badge-green">OK</span></div>
+              <div class="mrow"><span class="badge badge-green">3</span><div style="flex:1"><b style="font-size:13px">Kiểm tra đáp án &amp; gợi ý</b><div class="exam-meta">3 lỗi cần sửa</div></div><span class="badge badge-amber">Lỗi</span></div>
+              <div class="mrow"><span class="badge badge-grey">4</span><div style="flex:1"><b style="font-size:13px">Ghi vào SQL Server</b><div class="exam-meta">Chưa chạy — chờ file hợp lệ</div></div><span class="badge badge-grey">Chờ</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:18px">
+          <div class="card">
+            <div class="card-head"><div class="card-title">Bộ thẻ bắt buộc</div></div>
+            <div class="card-body" style="font-size:12.5px;line-height:1.9;color:var(--ink-2)">
+              <div class="mrow" style="justify-content:space-between"><b>DOC</b><span class="badge badge-blue">version, schema</span></div>
+              <div class="mrow" style="justify-content:space-between;margin-top:6px"><b>PART</b><span class="badge badge-blue">n, questions</span></div>
+              <div class="mrow" style="justify-content:space-between;margin-top:6px"><b>GROUP</b><span class="badge badge-blue">id, passage</span></div>
+              <div class="mrow" style="justify-content:space-between;margin-top:6px"><b>PASSAGE</b><span class="badge badge-blue">id, type</span></div>
+              <div class="mrow" style="justify-content:space-between;margin-top:6px"><b>Q · OPT · ANS · HINT</b><span class="badge badge-blue">key, lang</span></div>
+              <div style="margin-top:10px;color:var(--muted)">Thiếu bất kỳ thẻ nào ở trên, toàn bộ file bị hủy và không ghi vào CSDL.</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><div class="card-title">Quy tắc hoán vị</div></div>
+            <div class="card-body" style="font-size:12.5px;line-height:1.75;color:var(--ink-2)">
+              <p style="margin:0 0 8px"><b style="color:var(--blue-700)">shuffle_questions = yes</b><br>Câu độc lập (Part 5) — trộn từng câu.</p>
+              <p style="margin:0 0 8px"><b style="color:var(--blue-700)">shuffle_questions = group</b><br>Trộn cả nhóm, giữ bài đọc đi kèm câu hỏi.</p>
+              <p style="margin:0"><b style="color:var(--blue-700)">shuffle_options = yes</b><br>Đổi vị trí A–D nhưng giữ nguyên key, nhờ vậy đáp án không bao giờ lệch.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

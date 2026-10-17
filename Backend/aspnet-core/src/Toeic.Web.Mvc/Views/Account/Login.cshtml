@@ -1,0 +1,115 @@
+@using Abp.Authorization.Users
+@model Toeic.Web.Models.Account.LoginFormViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng nhập giảng viên — TOEIC Reading Studio</title>
+    <link rel="stylesheet" href="~/css/exam-studio.css" asp-append-version="true" />
+</head>
+<body>
+<div class="auth">
+    <div class="auth-art">
+        <div>
+            <div style="display:flex;align-items:center;gap:10px">
+                <div class="brand-mark" style="background:rgba(255,255,255,.16);box-shadow:none">TR</div>
+                <div>
+                    <div style="font-weight:700;font-size:14px">TOEIC Reading</div>
+                    <div style="font-size:11px;color:#CFE0FB">Exam Studio · Giảng viên</div>
+                </div>
+            </div>
+            <h1 style="margin-top:44px">Tạo đề, kiểm duyệt và xuất bản đề thi Reading trong một nơi.</h1>
+            <p>Import file Word có bộ thẻ chuẩn, xem trước từng câu, xuất bản cho sinh viên và theo dõi kết quả thi.</p>
+            <div class="auth-points">
+                <div class="auth-point"><i>✓</i><span>Kiểm tra 100% file Word trước khi lưu — sai tag, thiếu đáp án đều bị chặn</span></div>
+                <div class="auth-point"><i>✓</i><span>Xem trước đề đúng như sinh viên nhìn thấy, sửa lỗi chính tả ngay trên web</span></div>
+                <div class="auth-point"><i>✓</i><span>Thống kê lượt làm bài, điểm trung bình và Top 10 câu sai nhiều nhất</span></div>
+            </div>
+        </div>
+        <div style="font-size:11.5px;color:#B9D2F7">© 2026 AGARI · HUTECH — Đồ án giữa kỳ</div>
+    </div>
+
+    <div class="auth-form">
+        <div class="auth-box">
+            <div class="brand-mark">TR</div>
+            <h2>Đăng nhập giảng viên</h2>
+            <p>Dùng tài khoản được cấp bởi phòng đào tạo.</p>
+
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-err" style="margin-bottom:14px">
+                    <div>@Html.ValidationSummary(true, "")</div>
+                </div>
+            }
+
+            <form id="LoginForm" method="post" asp-action="Login">
+                <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+                <input type="hidden" name="returnUrlHash" />
+                <div class="stack">
+                    <div class="field">
+                        <label>Tên đăng nhập hoặc email</label>
+                        <input class="input" type="text" name="usernameOrEmailAddress"
+                               placeholder="admin" required autofocus maxlength="@AbpUserBase.MaxEmailAddressLength" />
+                    </div>
+                    <div class="field">
+                        <label>Mật khẩu</label>
+                        <input class="input" type="password" name="Password" placeholder="••••••••"
+                               autocomplete="current-password" required maxlength="@AbpUserBase.MaxPlainPasswordLength" />
+                    </div>
+                    <label style="display:flex;gap:8px;align-items:center;font-size:12.5px;color:var(--muted)">
+                        <input type="checkbox" id="RememberMe" name="RememberMe" value="true" /> Ghi nhớ đăng nhập
+                    </label>
+                    <button class="btn btn-primary btn-block" type="submit" style="height:44px" id="LoginButton">
+                        Đăng nhập
+                    </button>
+                </div>
+            </form>
+
+            <p style="margin-top:22px;font-size:11.5px;color:var(--muted);text-align:center">
+                Sinh viên làm bài trên ứng dụng di động — không cần tài khoản web.
+            </p>
+        </div>
+    </div>
+</div>
+<script>
+    // ABP trả JSON cho POST đăng nhập; tự chuyển trang theo targetUrl.
+    (function () {
+        var form = document.getElementById('LoginForm');
+        var box = document.createElement('div');
+        box.className = 'alert alert-err';
+        box.style.display = 'none';
+        box.style.marginBottom = '12px';
+        form.parentNode.insertBefore(box, form);
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            var btn = document.getElementById('LoginButton');
+            btn.disabled = true;
+            btn.textContent = 'Đang đăng nhập…';
+            fetch(form.action, {
+                method: 'POST',
+                body: new URLSearchParams(new FormData(form)),
+                credentials: 'same-origin',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            }).then(function (r) { return r.json(); }).then(function (data) {
+                if (data && data.success) {
+                    window.location.href = data.targetUrl || '/Exam';
+                    return;
+                }
+                var msg = (data && data.error && data.error.message) || 'Đăng nhập không thành công.';
+                box.textContent = msg;
+                box.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = 'Đăng nhập';
+            }).catch(function () {
+                form.submit();
+            });
+        });
+    })();
+</script>
+</body>
+</html>

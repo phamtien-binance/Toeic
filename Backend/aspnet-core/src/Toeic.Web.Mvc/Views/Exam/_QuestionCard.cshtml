@@ -1,0 +1,16 @@
+@model Toeic.ReadingTest.Dto.QuestionDto
+<div class="qcard">
+    <span class="q-num">Câu @Model.Number · Part @Model.Part</span>
+    <div class="q-stem">@Model.Stem</div>
+    @foreach (var o in Model.Options)
+    {
+        var correct = o.Key == Model.AnswerKey;
+        <div class="opt @(correct ? "correct" : "")">
+            <span class="k">@o.Key</span><span>@o.Text</span>
+        </div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Hint))
+    {
+        <div class="hint-box"><b>Gợi ý:</b> @Model.Hint</div>
+    }
+</div>

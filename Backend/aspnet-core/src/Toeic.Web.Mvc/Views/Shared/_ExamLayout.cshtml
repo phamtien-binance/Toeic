@@ -1,0 +1,47 @@
+@using Toeic.Web.Startup
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewBag.Title — TOEIC Reading Studio</title>
+    <link rel="stylesheet" href="~/css/exam-studio.css" asp-append-version="true" />
+</head>
+<body>
+<div class="shell">
+    <aside class="sidebar">
+        <div class="brand">
+            <div class="brand-mark">TR</div>
+            <div>
+                <div class="brand-name">TOEIC Reading</div>
+                <div class="brand-sub">Exam Studio</div>
+            </div>
+        </div>
+        <div class="nav-label">Quản lý đề thi</div>
+        <a class="nav-item @(ViewBag.Active == "exams" ? "active" : "")" asp-controller="Exam" asp-action="Index">Đề thi</a>
+        <a class="nav-item @(ViewBag.Active == "import" ? "active" : "")" asp-controller="Exam" asp-action="Import">Import từ Word</a>
+        <a class="nav-item @(ViewBag.Active == "stats" ? "active" : "")" asp-controller="Exam" asp-action="Stats">Thống kê</a>
+        <div class="nav-label">Hệ thống</div>
+        <a class="nav-item" href="/Users">Người dùng</a>
+        <a class="nav-item" href="/Roles">Vai trò</a>
+        <div class="sidebar-foot">
+            <div class="avatar">TH</div>
+            <div class="who">@(ViewBag.TeacherName ?? "Giảng viên")<small>Tài khoản giáo viên</small></div>
+        </div>
+    </aside>
+    <div class="main">
+        <div class="topbar">
+            <div class="page-title">@ViewBag.Title</div>
+            <div class="page-sub">@ViewBag.Subtitle</div>
+            @RenderSection("TopActions", required: false)
+        </div>
+        <div class="content">
+            @RenderBody()
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>Bảng điều khiển — TOEIC Reading</title>
+<link rel="stylesheet" href="../shared.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">TR</div>
+      <div><div class="brand-name">TOEIC Reading</div><div class="brand-sub">Exam Studio</div></div>
+    </div>
+    <div class="nav-label">Quản lý đề thi</div>
+    <a class="nav-item active" href="dashboard.html"><span class="ic">▦</span> Tổng quan</a>
+    <a class="nav-item" href="exams.html"><span class="ic">▤</span> Đề thi</a>
+    <a class="nav-item" href="import.html"><span class="ic">⇪</span> Import từ Word</a>
+    <a class="nav-item" href="preview.html"><span class="ic">◎</span> Xem trước &amp; sửa</a>
+    <div class="nav-label">Phân tích</div>
+    <a class="nav-item" href="stats.html"><span class="ic">◔</span> Thống kê</a>
+    <a class="nav-item" href="#"><span class="ic">☰</span> Ngân hàng câu hỏi</a>
+    <div class="nav-label">Hệ thống</div>
+    <a class="nav-item" href="#"><span class="ic">⚙</span> Cài đặt</a>
+    <div class="sidebar-foot">
+      <div class="avatar">TH</div>
+      <div class="who">Trần Thu Hà<small>Giảng viên · Tiếng Anh</small></div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <div class="page-title">Tổng quan</div>
+      <div class="page-sub">Học kỳ 1 · 2026–2027</div>
+      <a class="btn btn-sm" href="import.html">Import đề</a>
+      <a class="btn btn-primary btn-sm" href="exams.html">+ Tạo đề mới</a>
+    </div>
+
+    <div class="content">
+      <div class="kpis">
+        <div class="kpi">
+          <div class="kpi-label">Đề thi đã xuất bản</div>
+          <div class="kpi-value">06 <small>/ 09 đề</small></div>
+          <div class="kpi-foot">↑ 2 đề trong 7 ngày</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Lượt làm bài</div>
+          <div class="kpi-value">1.284</div>
+          <svg class="spark" viewBox="0 0 200 40" preserveAspectRatio="none">
+            <polyline points="0,32 25,28 50,30 75,22 100,24 125,15 150,17 175,9 200,6"
+              fill="none" stroke="#1D6FE0" stroke-width="2.5" stroke-linejoin="round"/>
+            <polyline points="0,32 25,28 50,30 75,22 100,24 125,15 150,17 175,9 200,6 200,40 0,40"
+              fill="rgba(29,111,224,.10)" stroke="none"/>
+          </svg>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Điểm trung bình</div>
+          <div class="kpi-value">72<small>/100</small></div>
+          <div class="kpi-foot">↑ 4,2 điểm so với tuần trước</div>
+        </div>
+        <div class="kpi">
+          <div class="kpi-label">Bài chưa hoàn thành</div>
+          <div class="kpi-value">37</div>
+          <div class="kpi-foot down">↓ 9 bài so với tuần trước</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1.55fr 1fr;gap:18px;align-items:start">
+        <div class="card">
+          <div class="card-head">
+            <div class="card-title">Đề thi gần đây</div>
+            <a class="btn btn-ghost btn-sm" href="exams.html" style="margin-left:auto">Xem tất cả</a>
+          </div>
+          <table>
+            <thead><tr><th>Đề thi</th><th>Câu</th><th>Lượt làm</th><th>Điểm TB</th><th>Trạng thái</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><div class="exam-name">TOEIC Reading Test 3</div><div class="exam-meta">Cập nhật 17/10 · 75 phút</div></td>
+                <td class="mono">100</td><td class="mono">412</td><td class="mono">74</td>
+                <td><span class="badge badge-green"><span class="dot"></span>Đã xuất bản</span></td>
+              </tr>
+              <tr>
+                <td><div class="exam-name">Reading Mini Test — Part 5</div><div class="exam-meta">Cập nhật 15/10 · 20 phút</div></td>
+                <td class="mono">30</td><td class="mono">208</td><td class="mono">81</td>
+                <td><span class="badge badge-green"><span class="dot"></span>Đã xuất bản</span></td>
+              </tr>
+              <tr>
+                <td><div class="exam-name">Reading Test 2 — Part 6 &amp; 7</div><div class="exam-meta">Cập nhật 12/10 · 55 phút</div></td>
+                <td class="mono">70</td><td class="mono">—</td><td class="mono">—</td>
+                <td><span class="badge badge-amber"><span class="dot"></span>Chờ xuất bản</span></td>
+              </tr>
+              <tr>
+                <td><div class="exam-name">Đề giữa kỳ — Reading v03</div><div class="exam-meta">Nháp · 75 phút</div></td>
+                <td class="mono">100</td><td class="mono">—</td><td class="mono">—</td>
+                <td><span class="badge badge-grey"><span class="dot"></span>Bản nháp</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card">
+          <div class="card-head"><div class="card-title">Top câu sai nhiều nhất</div><a class="btn btn-ghost btn-sm" href="stats.html" style="margin-left:auto">Chi tiết</a></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><b>Câu 182</b><span class="mono" style="color:var(--muted)">68% sai</span></div>
+              <div class="bar bad"><i style="width:68%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><b>Câu 199</b><span class="mono" style="color:var(--muted)">61% sai</span></div>
+              <div class="bar bad"><i style="width:61%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><b>Câu 136</b><span class="mono" style="color:var(--muted)">54% sai</span></div>
+              <div class="bar warn"><i style="width:54%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><b>Câu 163</b><span class="mono" style="color:var(--muted)">49% sai</span></div>
+              <div class="bar warn"><i style="width:49%"></i></div>
+            </div>
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:6px"><b>Câu 171</b><span class="mono" style="color:var(--muted)">45% sai</span></div>
+              <div class="bar warn"><i style="width:45%"></i></div>
+            </div>
+            <div class="alert alert-info" style="margin-top:2px">Gợi ý: nhóm câu hỏi suy luận Part 7 nên được giảng lại trước buổi thi kế tiếp.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px">
+        <div class="card"><div class="card-body">
+          <div class="kpi-label">Tỉ lệ hoàn thành bài thi</div>
+          <div style="display:flex;align-items:flex-end;gap:10px;margin:8px 0 12px"><div class="kpi-value" style="margin:0">91<small>%</small></div><span class="badge badge-green">Tốt</span></div>
+          <div class="bar"><i style="width:91%"></i></div>
+        </div></div>
+        <div class="card"><div class="card-body">
+          <div class="kpi-label">Thời gian làm bài trung bình</div>
+          <div style="display:flex;align-items:flex-end;gap:10px;margin:8px 0 12px"><div class="kpi-value" style="margin:0">68<small> phút</small></div><span class="badge badge-blue">/ 75 phút</span></div>
+          <div class="bar"><i style="width:90%"></i></div>
+        </div></div>
+        <div class="card"><div class="card-body">
+          <div class="kpi-label">Câu bỏ trống trung bình</div>
+          <div style="display:flex;align-items:flex-end;gap:10px;margin:8px 0 12px"><div class="kpi-value" style="margin:0">7<small> câu</small></div><span class="badge badge-amber">Cần lưu ý</span></div>
+          <div class="bar warn"><i style="width:38%"></i></div>
+        </div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
