@@ -1,0 +1,140 @@
+// DBML cho ToeicDb — dán vào https://dbdiagram.io/d
+
+Table RtAttemptAnswers {
+  Id bigint [pk]
+  AttemptId bigint
+  QuestionId bigint
+  SelectedKey nvarchar(4) [null]
+  IsCorrect bit
+  AnsweredAt datetime2
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtAttempts {
+  Id bigint [pk]
+  ExamId bigint
+  UserId bigint
+  StudentCode nvarchar(64) [null]
+  StudentName nvarchar(128) [null]
+  StartedAt datetime2
+  SubmittedAt datetime2 [null]
+  Status int
+  Score int
+  CorrectCount int
+  WrongCount int
+  SkippedCount int
+  DurationSeconds int
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtExams {
+  Id bigint [pk]
+  Title nvarchar(256)
+  Description nvarchar(512) [null]
+  DurationMinutes int
+  TotalQuestions int
+  Status int
+  SourceFile nvarchar(256) [null]
+  PublishedAt datetime2 [null]
+  OpenAt datetime2 [null]
+  CloseAt datetime2 [null]
+  ShuffleQuestions bit
+  ShuffleOptions bit
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtPassageDocuments {
+  Id bigint [pk]
+  PassageId bigint
+  Label nvarchar(256) [null]
+  DocumentType nvarchar(64) [null]
+  Text nvarchar(max) [null]
+  ImagePath nvarchar(512) [null]
+  OrderIndex int
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtPassages {
+  Id bigint [pk]
+  ExamId bigint
+  GroupCode nvarchar(64) [null]
+  Part int
+  PassageType nvarchar(64) [null]
+  Header nvarchar(512) [null]
+  OrderIndex int
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtQuestionOptions {
+  Id bigint [pk]
+  QuestionId bigint
+  OptionKey nvarchar(4)
+  Text nvarchar(max) [null]
+  OrderIndex int
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Table RtQuestions {
+  Id bigint [pk]
+  ExamId bigint
+  PassageId bigint [null]
+  Number int
+  Part int
+  Stem nvarchar(max) [null]
+  AnswerKey nvarchar(4) [null]
+  Hint nvarchar(max) [null]
+  OrderIndex int
+  ShuffleQuestions nvarchar(16) [null]
+  CreationTime datetime2
+  CreatorUserId bigint [null]
+  LastModificationTime datetime2 [null]
+  LastModifierUserId bigint [null]
+  IsDeleted bit
+  DeleterUserId bigint [null]
+  DeletionTime datetime2 [null]
+}
+
+Ref: RtExams.Id < RtAttempts.ExamId
+Ref: RtExams.Id < RtPassages.ExamId
+Ref: RtPassages.Id < RtPassageDocuments.PassageId
+Ref: RtExams.Id < RtQuestions.ExamId
+Ref: RtPassages.Id < RtQuestions.PassageId
+Ref: RtAttempts.Id < RtAttemptAnswers.AttemptId
+Ref: RtQuestions.Id < RtAttemptAnswers.QuestionId
+Ref: RtQuestions.Id < RtQuestionOptions.QuestionId
