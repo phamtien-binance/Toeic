@@ -10,13 +10,26 @@ kiemtraa/
 │     ├─ Toeic.Application/ReadingTest/ # ExamAppService, AttemptAppService, DocxExamParser (bộ thẻ HERMES-EXAM-TAG)
 │     ├─ Toeic.EntityFrameworkCore/     # DbContext + migration ReadingTest_Tables
 │     ├─ Toeic.Web.Host/                # REST API cho app mobile (http://localhost:5000, https://localhost:44311)
-│     └─ Toeic.Web.Mvc/                 # Web giảng viên (http://localhost:5001/Exam)
+│     └─ Toeic.Web.Mvc/                 # Web giảng viên (http://localhost:5001/Exam), có đăng nhập
 ├─ Frontend/
 │  ├─ design/                           # Prototype HTML trắng–xanh (teacher + mobile)
 │  ├─ figma-kit/                        # Bản standalone + script import Figma + SVG đã render
 │  └─ student_app/                      # Flutter app cho sinh viên
-└─ Files/                               # (xem Desktop) file Word đề thi có tag + PDF preview
+└─ Files/
+   ├─ TOEIC_Reading_Test3_Tagged.docx   # Đề thi có bộ thẻ (deliverable 1)
+   ├─ BaoCao_TOEIC_Reading.docx/.pdf    # Báo cáo đồ án (deliverable 2)
+   ├─ KichBan_Demo.md                   # Kịch bản quay video demo từng chức năng
+   ├─ images/                           # Ảnh cắt từ đề gốc
+   └─ screenshots/                      # Ảnh chụp màn hình dùng trong báo cáo
 ```
+
+## 0. Tài khoản & quyền
+
+| Vai trò | Đăng nhập | Phạm vi |
+|---|---|---|
+| Giảng viên | `admin` / `123qwe` tại http://localhost:5001/Account/Login | Toàn bộ trang quản trị (quyền `Pages.Exam`); API quản trị trả 401 nếu chưa đăng nhập |
+| Sinh viên | Mã số sinh viên trên app Flutter (không cần mật khẩu) | Chỉ dùng các API sinh viên: `GetStudentExams`, `Attempt/Start`, `Attempt/SaveAnswers`, `Attempt/Submit`, `Attempt/GetResult` |
+
 
 ## 1. Chạy backend
 
@@ -88,3 +101,10 @@ Android emulator dùng mặc định `http://10.0.2.2:5000` (không cần dart-d
 - FK dùng `DeleteBehavior.Restrict` ở các quan hệ nhiều nhánh (Exam→Passage, Exam→Question, Attempt→Exam) để tránh lỗi SQL Server 1785 "multiple cascade paths".
 - Các endpoint POST nhận **DTO** (`ExamIdInput`, `StartAttemptInput`…), không nhận tham số nguyên thuỷ, vì dynamic Web API bind primitive qua query string.
 - Phân quyền chi tiết (giảng viên/sinh viên) đang để mở cho mục đích demo; bật lại bằng `[AbpAuthorize]` + permission `Pages.Exam` khi triển khai thật.
+
+## 7. Link nộp bài
+
+- Figma (12 frame, 2 page): https://www.figma.com/design/Yn5o5kAnlpF0TqFaq1dr6k/Untitled
+- Báo cáo: `Files/BaoCao_TOEIC_Reading.docx` (kèm bản PDF)
+- Kịch bản quay demo: `Files/KichBan_Demo.md`
+- Repository: `git log` trong thư mục này (commit đầu tiên chứa toàn bộ source + files)
