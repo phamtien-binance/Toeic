@@ -54,6 +54,13 @@ class ApiClient {
             .toList(),
       );
 
+  Future<List<AttemptSummary>> studentAttempts(int examId, String studentCode) => _get(
+        'Exam/GetStudentAttempts?examId=$examId&studentCode=$studentCode',
+        (d) => ((d as List?) ?? [])
+            .map((e) => AttemptSummary.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+
   Future<AttemptSession> startAttempt(int examId, String code, String name) => _post(
         'Attempt/Start',
         {'examId': examId, 'studentCode': code, 'studentName': name},

@@ -38,6 +38,35 @@ class _ResultScreenState extends State<ResultScreen> {
           onPressed: () => Navigator.of(context).pop(true),
         ),
       ),
+      bottomNavigationBar: SafeArea(
+        minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        child: Row(children: [
+          Expanded(
+            child: OutlinedButton.icon(
+              style: OutlinedButton.styleFrom(
+                foregroundColor: AppColors.blue700,
+                side: const BorderSide(color: Color(0xFFBFD5F5)),
+                minimumSize: const Size.fromHeight(46),
+              ),
+              onPressed: () => Navigator.of(context).pop(true),
+              icon: const Icon(Icons.list_alt, size: 18),
+              label: const Text('Chọn đề khác'),
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: FilledButton.icon(
+              style: FilledButton.styleFrom(
+                backgroundColor: AppColors.blue600,
+                minimumSize: const Size.fromHeight(46),
+              ),
+              onPressed: () => Navigator.of(context).pop('retry'),
+              icon: const Icon(Icons.refresh, size: 18),
+              label: const Text('Làm lại bài'),
+            ),
+          ),
+        ]),
+      ),
       body: FutureBuilder<AttemptResult>(
         future: _future,
         builder: (context, snap) {

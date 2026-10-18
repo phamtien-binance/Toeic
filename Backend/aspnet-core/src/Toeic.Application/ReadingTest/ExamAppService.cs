@@ -24,6 +24,7 @@ namespace Toeic.ReadingTest
         Task UpdateQuestionAsync(UpdateQuestionInput input);
         Task<ExamStatsDto> GetStatsAsync(long id);
         Task<List<StudentExamDto>> GetStudentExamsAsync(StudentExamsInput input);
+        Task<List<StudentAttemptDto>> GetStudentAttemptsAsync(StudentAttemptsInput input);
     }
 
     public class ExamAppService : ToeicAppServiceBase, IExamAppService
@@ -434,9 +435,14 @@ namespace Toeic.ReadingTest
 
             return exams.Select(e =>
             {
-                var mine = attempts.Where(a => a.ExamId == e.Id && a.Status != AttemptStatus.InProgress
-                                               && (code != null ? a.StudentCode == code : a.UserId == userId))
-                    .OrderByDescending(a => a.SubmittedAt).FirstOrDefault();
+                var all = attempts
+                    .Where(a => a.ExamId == e.Id && (code != null ? a.StudentCode == code : a.UserId == userId))
+                    .ToList();
+                var done = all.Where(a => a.Status != AttemptStatus.InProgress)
+                    .OrderByDescending(a => a.SubmittedAt).ToList();
+                var mine = done.FirstOrDefault();
+                var running = all.FirstOrDefault(a => a.Status == AttemptStatus.InProgress);
+
                 return new StudentExamDto
                 {
                     Id = e.Id,
@@ -446,9 +452,41 @@ namespace Toeic.ReadingTest
                     CloseAt = e.CloseAt,
                     AlreadyAttempted = mine != null,
                     LastAttemptId = mine?.Id,
-                    LastScore = mine?.Score
+                    LastScore = mine?.Score,
+                    AttemptCount = done.Count,
+                    BestScore = done.Count == 0 ? (int?)null : done.Max(a => a.Score),
+                    LastSubmittedAt = mine?.SubmittedAt,
+                    InProgressAttemptId = running?.Id
                 };
             }).ToList();
+        }
+
+        /// <summary>Lịch sử các lượt làm bài của một sinh viên (để làm lại / so sánh điểm).</summary>
+        public async Task<List<StudentAttemptDto>> GetStudentAttemptsAsync(StudentAttemptsInput input)
+        {
+            var exam = await _examRepo.GetAsync(input.ExamId);
+            var userId = AbpSession.UserId ?? 0;
+            var all = (await _attemptRepo.GetAllListAsync())
+                .Where(a => a.ExamId == exam.Id &&
+                            (input.StudentCode != null ? a.StudentCode == input.StudentCode : a.UserId == userId))
+                .OrderByDescending(a => a.StartedAt)
+                .Select(a => new StudentAttemptDto
+                {
+                    Id = a.Id,
+                    ExamId = a.ExamId,
+                    ExamTitle = exam.Title,
+                    Score = a.Score,
+                    CorrectCount = a.CorrectCount,
+                    WrongCount = a.WrongCount,
+                    SkippedCount = a.SkippedCount,
+                    StartedAt = a.StartedAt,
+                    SubmittedAt = a.SubmittedAt,
+                    DurationSeconds = a.DurationSeconds,
+                    Status = a.Status == AttemptStatus.InProgress ? "InProgress"
+                           : a.Status == AttemptStatus.AutoSubmitted ? "AutoSubmitted" : "Submitted"
+                })
+                .ToList();
+            return all;
         }
     }
 

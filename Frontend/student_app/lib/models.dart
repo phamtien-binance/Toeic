@@ -103,6 +103,10 @@ class StudentExam {
   final bool alreadyAttempted;
   final int? lastAttemptId;
   final int? lastScore;
+  final int attemptCount;
+  final int? bestScore;
+  final String? lastSubmittedAt;
+  final int? inProgressAttemptId;
 
   StudentExam({
     required this.id,
@@ -113,6 +117,10 @@ class StudentExam {
     required this.alreadyAttempted,
     this.lastAttemptId,
     this.lastScore,
+    this.attemptCount = 0,
+    this.bestScore,
+    this.lastSubmittedAt,
+    this.inProgressAttemptId,
   });
 
   factory StudentExam.fromJson(Map<String, dynamic> j) => StudentExam(
@@ -124,6 +132,52 @@ class StudentExam {
         alreadyAttempted: j['alreadyAttempted'] as bool? ?? false,
         lastAttemptId: j['lastAttemptId'] as int?,
         lastScore: j['lastScore'] as int?,
+        attemptCount: j['attemptCount'] as int? ?? 0,
+        bestScore: j['bestScore'] as int?,
+        lastSubmittedAt: j['lastSubmittedAt'] as String?,
+        inProgressAttemptId: j['inProgressAttemptId'] as int?,
+      );
+}
+
+/// Một lượt làm bài trong lịch sử (để làm lại / so sánh điểm).
+class AttemptSummary {
+  final int id;
+  final int examId;
+  final int score;
+  final int correctCount;
+  final int wrongCount;
+  final int skippedCount;
+  final String startedAt;
+  final String? submittedAt;
+  final int durationSeconds;
+  final String status;
+
+  AttemptSummary({
+    required this.id,
+    required this.examId,
+    required this.score,
+    required this.correctCount,
+    required this.wrongCount,
+    required this.skippedCount,
+    required this.startedAt,
+    this.submittedAt,
+    required this.durationSeconds,
+    required this.status,
+  });
+
+  bool get inProgress => status == 'InProgress';
+
+  factory AttemptSummary.fromJson(Map<String, dynamic> j) => AttemptSummary(
+        id: j['id'] as int,
+        examId: j['examId'] as int? ?? 0,
+        score: j['score'] as int? ?? 0,
+        correctCount: j['correctCount'] as int? ?? 0,
+        wrongCount: j['wrongCount'] as int? ?? 0,
+        skippedCount: j['skippedCount'] as int? ?? 0,
+        startedAt: j['startedAt'] as String? ?? '',
+        submittedAt: j['submittedAt'] as String?,
+        durationSeconds: j['durationSeconds'] as int? ?? 0,
+        status: j['status'] as String? ?? 'Submitted',
       );
 }
 

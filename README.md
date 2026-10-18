@@ -79,6 +79,15 @@ Khi import, ảnh nhúng trong `.docx` được trích ra và lưu vào thư m�
 `uploads/exams/{examId}/{file}.png`. Cả web (5001) và API (5000) phục vụ thư mục này qua `/uploads`,
 nên đề có biểu mẫu/hoá đơn/tin nhắn vẫn hiển thị đúng trên web giảng viên và app sinh viên.
 
+
+### Làm bài nhiều lần
+Một MSSV được làm **không giới hạn số lần** trên mỗi đề:
+- Chưa làm: nút **Bắt đầu làm bài**.
+- Đang làm dở: nút **Tiếp tục bài đang làm** (giữ nguyên đáp án đã chọn).
+- Đã nộp: badge *Đã làm N lần · cao nhất X*, xem **Lịch sử N lượt** (chạm một lượt để xem lại đáp án), **Xem lại điểm** và **Làm lại bài**.
+- Ở màn kết quả có **Làm lại bài** (tạo lượt mới ngay) và **Chọn đề khác** (về danh sách đề).
+- Mỗi lượt là một bản ghi `RtAttempts` riêng; API: `GET /api/services/app/Exam/GetStudentAttempts?examId=&studentCode=`.
+
 ## 4. API chính (ABP dynamic Web API)
 
 | Method | Endpoint | Việc |

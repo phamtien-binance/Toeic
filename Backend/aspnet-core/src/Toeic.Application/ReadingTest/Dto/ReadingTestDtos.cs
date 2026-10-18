@@ -176,6 +176,31 @@ namespace Toeic.ReadingTest.Dto
         public bool AlreadyAttempted { get; set; }
         public long? LastAttemptId { get; set; }
         public int? LastScore { get; set; }
+        public int AttemptCount { get; set; }
+        public int? BestScore { get; set; }
+        public DateTime? LastSubmittedAt { get; set; }
+        public long? InProgressAttemptId { get; set; }
+    }
+
+    public class StudentAttemptsInput
+    {
+        public long ExamId { get; set; }
+        public string StudentCode { get; set; }
+    }
+
+    public class StudentAttemptDto
+    {
+        public long Id { get; set; }
+        public long ExamId { get; set; }
+        public string ExamTitle { get; set; }
+        public int Score { get; set; }
+        public int CorrectCount { get; set; }
+        public int WrongCount { get; set; }
+        public int SkippedCount { get; set; }
+        public DateTime StartedAt { get; set; }
+        public DateTime? SubmittedAt { get; set; }
+        public int DurationSeconds { get; set; }
+        public string Status { get; set; }
     }
 
     public class AttemptQuestionDto

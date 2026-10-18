@@ -158,19 +158,30 @@ class _ExamsScreenState extends State<ExamsScreen> {
           Text('${exam.totalQuestions} câu · ${exam.durationMinutes} phút · Part 5 · 6 · 7',
               style: const TextStyle(color: Color(0xFFD5E4FC), fontSize: 11.5)),
           const SizedBox(height: 14),
-          if (exam.alreadyAttempted) ...[
+          if (exam.attemptCount > 0 || exam.inProgressAttemptId != null) ...[
             Row(children: [
-              _softBadge('Đã làm · ${exam.lastScore ?? 0} điểm'),
+              _softBadge(exam.attemptCount > 0
+                  ? 'Đã làm ${exam.attemptCount} lần · cao nhất ${exam.bestScore ?? exam.lastScore ?? 0}'
+                  : 'Đang làm dở'),
               const Spacer(),
-              TextButton.icon(
-                onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (_) => ResultScreen(attemptId: exam.lastAttemptId!, examTitle: exam.title),
-                )),
-                icon: const Icon(Icons.assignment_turned_in_outlined, size: 16, color: Colors.white),
-                label: const Text('Xem lại điểm', style: TextStyle(color: Colors.white)),
-              ),
+              if (exam.lastAttemptId != null)
+                TextButton.icon(
+                  onPressed: () => _openResult(exam, exam.lastAttemptId!),
+                  icon: const Icon(Icons.assignment_turned_in_outlined, size: 16, color: Colors.white),
+                  label: const Text('Xem lại điểm', style: TextStyle(color: Colors.white)),
+                ),
             ]),
-            const SizedBox(height: 8),
+            if (exam.attemptCount > 0)
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton.icon(
+                  onPressed: () => _showHistory(exam),
+                  icon: const Icon(Icons.history, size: 15, color: Color(0xFFD5E4FC)),
+                  label: Text('Lịch sử ${exam.attemptCount} lượt làm',
+                      style: const TextStyle(color: Color(0xFFD5E4FC), fontSize: 12)),
+                ),
+              ),
+            const SizedBox(height: 6),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
@@ -180,8 +191,10 @@ class _ExamsScreenState extends State<ExamsScreen> {
                   minimumSize: const Size.fromHeight(44),
                 ),
                 onPressed: () => _start(exam),
-                icon: const Icon(Icons.refresh, size: 18, color: Colors.white),
-                label: const Text('Làm lại bài', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+                icon: Icon(exam.inProgressAttemptId != null ? Icons.play_arrow_rounded : Icons.refresh,
+                    size: 18, color: Colors.white),
+                label: Text(exam.inProgressAttemptId != null ? 'Tiếp tục bài đang làm' : 'Làm lại bài',
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
               ),
             ),
           ]
@@ -199,6 +212,133 @@ class _ExamsScreenState extends State<ExamsScreen> {
               ),
             ),
         ],
+      ),
+    );
+  }
+
+  Future<void> _openResult(StudentExam exam, int attemptId) async {
+    final r = await Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => ResultScreen(attemptId: attemptId, examTitle: exam.title),
+    ));
+    if (!mounted) return;
+    if (r == 'retry') {
+      await _start(exam);
+    } else {
+      _refresh();
+    }
+  }
+
+  String _fmtDate(String? iso) {
+    if (iso == null || iso.isEmpty) return '—';
+    final dt = DateTime.tryParse(iso)?.toLocal();
+    if (dt == null) return '—';
+    String two(int v) => v.toString().padLeft(2, '0');
+    return '${two(dt.day)}/${two(dt.month)}/${dt.year} ${two(dt.hour)}:${two(dt.minute)}';
+  }
+
+  Future<void> _showHistory(StudentExam exam) async {
+    await showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: AppColors.bg,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(22))),
+      builder: (ctx) => DraggableScrollableSheet(
+        expand: false,
+        initialChildSize: 0.55,
+        maxChildSize: 0.9,
+        builder: (_, controller) => FutureBuilder<List<AttemptSummary>>(
+          future: ApiClient.instance.studentAttempts(exam.id, widget.studentCode),
+          builder: (_, snap) {
+            final list = snap.data ?? const <AttemptSummary>[];
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 14, 18, 6),
+                  child: Text('Lịch sử làm bài · ${exam.title}',
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700, color: AppColors.ink)),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18, bottom: 8),
+                  child: Text('${list.length} lượt · chạm một lượt để xem lại đáp án',
+                      style: const TextStyle(fontSize: 12, color: AppColors.muted)),
+                ),
+                Expanded(
+                  child: snap.connectionState == ConnectionState.waiting
+                      ? const Center(child: CircularProgressIndicator(color: AppColors.blue600))
+                      : ListView.separated(
+                          controller: controller,
+                          padding: const EdgeInsets.fromLTRB(16, 0, 16, 20),
+                          itemCount: list.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (_, i) {
+                            final a = list[i];
+                            final noi = list.length - i;
+                            return Material(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(14),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(14),
+                                onTap: a.inProgress
+                                    ? null
+                                    : () {
+                                        Navigator.of(ctx).pop();
+                                        _openResult(exam, a.id);
+                                      },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(14),
+                                  child: Row(children: [
+                                    Container(
+                                      width: 44,
+                                      height: 44,
+                                      alignment: Alignment.center,
+                                      decoration: BoxDecoration(
+                                        color: a.inProgress
+                                            ? const Color(0xFFFFF4E0)
+                                            : (a.score >= 70
+                                                ? const Color(0xFFE7F7EE)
+                                                : const Color(0xFFEEF4FF)),
+                                        borderRadius: BorderRadius.circular(12),
+                                      ),
+                                      child: Text(a.inProgress ? '…' : '${a.score}',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w800,
+                                              fontSize: a.inProgress ? 18 : 17,
+                                              color: a.inProgress
+                                                  ? const Color(0xFFB4690E)
+                                                  : (a.score >= 70
+                                                      ? const Color(0xFF1B8A50)
+                                                      : AppColors.blue700))),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Lần $noi · ${a.inProgress ? "đang làm" : "${a.score} điểm"}',
+                                              style: const TextStyle(
+                                                  fontWeight: FontWeight.w700, color: AppColors.ink)),
+                                          const SizedBox(height: 3),
+                                          Text(
+                                              '${_fmtDate(a.submittedAt ?? a.startedAt)} · đúng ${a.correctCount} · sai ${a.wrongCount} · bỏ ${a.skippedCount}',
+                                              style: const TextStyle(fontSize: 11, color: AppColors.muted)),
+                                        ],
+                                      ),
+                                    ),
+                                    if (!a.inProgress)
+                                      const Icon(Icons.chevron_right, color: AppColors.muted),
+                                  ]),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }
@@ -240,17 +380,51 @@ class _ExamsScreenState extends State<ExamsScreen> {
                   const SizedBox(height: 3),
                   Text('${exam.totalQuestions} câu · ${exam.durationMinutes} phút',
                       style: const TextStyle(fontSize: 11.5, color: AppColors.muted)),
+                  if (exam.attemptCount > 0) ...[
+                    const SizedBox(height: 3),
+                    Text('Đã làm ${exam.attemptCount} lần · cao nhất ${exam.bestScore ?? 0} điểm',
+                        style: const TextStyle(fontSize: 10.5, color: Color(0xFF1B8A50), fontWeight: FontWeight.w600)),
+                  ],
                 ],
               ),
             ),
-            exam.alreadyAttempted
-                ? TextButton(
-                    onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-                      builder: (_) => ResultScreen(attemptId: exam.lastAttemptId!, examTitle: exam.title),
-                    )),
-                    child: Text('${exam.lastScore ?? 0} điểm'),
-                  )
-                : OutlinedButton(onPressed: () => _start(exam), child: const Text('Làm bài')),
+            if (exam.attemptCount > 0)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  InkWell(
+                    borderRadius: BorderRadius.circular(8),
+                    onTap: () => _openResult(exam, exam.lastAttemptId!),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      child: Column(children: [
+                        Text('${exam.lastScore ?? 0}',
+                            style: const TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.w800, color: AppColors.blue700)),
+                        const Text('điểm', style: TextStyle(fontSize: 9.5, color: AppColors.muted)),
+                      ]),
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  SizedBox(
+                    height: 28,
+                    child: OutlinedButton(
+                      style: OutlinedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        minimumSize: const Size(0, 28),
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        side: const BorderSide(color: Color(0xFFBFD5F5)),
+                        foregroundColor: AppColors.blue700,
+                      ),
+                      onPressed: () => _start(exam),
+                      child: Text(exam.inProgressAttemptId != null ? 'Tiếp tục' : 'Làm lại',
+                          style: const TextStyle(fontSize: 11)),
+                    ),
+                  ),
+                ],
+              )
+            else
+              OutlinedButton(onPressed: () => _start(exam), child: const Text('Làm bài')),
           ],
         ),
       ),
@@ -270,7 +444,12 @@ class _ExamsScreenState extends State<ExamsScreen> {
       final result = await Navigator.of(context).push(MaterialPageRoute(
         builder: (_) => TakingScreen(session: session, studentCode: widget.studentCode),
       ));
-      if (result == true) _refresh();
+      if (!mounted) return;
+      if (result == 'retry') {
+        await _start(exam); // kiểm tra xong → làm lại ngay
+      } else if (result == true) {
+        _refresh();
+      }
     } catch (e) {
       if (!mounted) return;
       Navigator.of(context).pop();
