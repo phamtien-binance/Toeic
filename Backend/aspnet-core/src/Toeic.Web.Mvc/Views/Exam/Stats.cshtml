@@ -3,6 +3,7 @@
     Layout = "~/Views/Shared/_ExamLayout.cshtml";
 }
 @section TopActions {
+    <a class="btn btn-sm" asp-action="Stats">Chọn đề khác</a>
     <a class="btn btn-sm" asp-action="Preview" asp-route-id="@Model.ExamId">← Xem đề</a>
 }
 

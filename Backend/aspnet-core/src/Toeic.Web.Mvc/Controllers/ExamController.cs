@@ -184,11 +184,30 @@ namespace Toeic.Web.Controllers
             return RedirectToAction("Preview", new { id });
         }
 
-        public async Task<IActionResult> Stats(long id)
+        public async Task<IActionResult> Stats(long id = 0)
         {
+            // Vào từ menu trái (không có id) hoặc id không hợp lệ -> hiện danh sách để chọn đề
+            if (id <= 0)
+            {
+                var exams = await _examAppService.GetAllAsync(new GetExamsInput());
+                ViewBag.Title = "Thống kê và phân tích";
+                ViewBag.Active = "stats";
+                ViewBag.Subtitle = $"{exams.Count} đề — chọn đề để xem thống kê";
+                return View("StatsChooser", exams);
+            }
+
             ViewBag.Title = "Thống kê và phân tích";
             ViewBag.Active = "stats";
-            var stats = await _examAppService.GetStatsAsync(id);
+            ExamStatsDto stats;
+            try
+            {
+                stats = await _examAppService.GetStatsAsync(id);
+            }
+            catch (Abp.Domain.Entities.EntityNotFoundException)
+            {
+                TempData["Flash"] = "Không tìm thấy đề cần xem thống kê.";
+                return RedirectToAction("Stats");
+            }
             ViewBag.Subtitle = $"{stats.AttemptCount} lượt làm · điểm TB {stats.AverageScore}";
             return View(stats);
         }

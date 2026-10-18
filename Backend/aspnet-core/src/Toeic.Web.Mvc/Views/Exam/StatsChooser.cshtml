@@ -1,0 +1,64 @@
+@model List<Toeic.ReadingTest.Dto.ExamListDto>
+@{
+    Layout = "~/Views/Shared/_ExamLayout.cshtml";
+}
+
+<div class="card">
+    <div class="card-head">
+        <div class="card-title">Chọn đề để xem thống kê</div>
+        <a class="btn btn-sm" asp-action="Index" style="margin-left:auto">← Danh sách đề</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th>Đề thi</th>
+            <th style="width:110px">Câu</th>
+            <th style="width:110px">Lượt làm</th>
+            <th style="width:140px">Điểm TB</th>
+            <th style="width:130px">Trạng thái</th>
+            <th style="width:150px"></th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var e in Model)
+        {
+            var published = e.Status == "Published";
+            <tr>
+                <td>
+                    <b>@e.Title</b>
+                    <div style="font-size:11.5px;color:var(--muted)">@e.DurationMinutes phút · tạo @e.CreationTime.ToString("dd/MM/yyyy")</div>
+                </td>
+                <td class="mono">@e.TotalQuestions</td>
+                <td class="mono">@e.AttemptCount</td>
+                <td>
+                    @if (e.AttemptCount > 0)
+                    {
+                        <div class="barwrap">
+                            <div class="bar @(e.AverageScore >= 70 ? "good" : e.AverageScore >= 40 ? "warn" : "bad")">
+                                <i style="width:@(Math.Min(100, e.AverageScore))%"></i>
+                            </div>
+                            <b class="mono">@e.AverageScore.ToString("0.#")</b>
+                        </div>
+                    }
+                    else
+                    {
+                        <span style="color:var(--muted);font-size:12px">chưa có bài nộp</span>
+                    }
+                </td>
+                <td>
+                    <span class="badge @(published ? "badge-green" : "badge-grey")">@(published ? "Đã xuất bản" : "Bản nháp")</span>
+                </td>
+                <td style="text-align:right">
+                    <a class="btn btn-sm" asp-action="Stats" asp-route-id="@e.Id">Xem thống kê</a>
+                </td>
+            </tr>
+        }
+        @if (Model.Count == 0)
+        {
+            <tr><td colspan="6" style="text-align:center;color:var(--muted);padding:28px">
+                Chưa có đề nào. Hãy import đề từ Word trước.
+            </td></tr>
+        }
+        </tbody>
+    </table>
+</div>
