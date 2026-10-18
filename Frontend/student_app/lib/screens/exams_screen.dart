@@ -158,17 +158,33 @@ class _ExamsScreenState extends State<ExamsScreen> {
           Text('${exam.totalQuestions} câu · ${exam.durationMinutes} phút · Part 5 · 6 · 7',
               style: const TextStyle(color: Color(0xFFD5E4FC), fontSize: 11.5)),
           const SizedBox(height: 14),
-          if (exam.alreadyAttempted)
+          if (exam.alreadyAttempted) ...[
             Row(children: [
               _softBadge('Đã làm · ${exam.lastScore ?? 0} điểm'),
-              const SizedBox(width: 8),
-              TextButton(
+              const Spacer(),
+              TextButton.icon(
                 onPressed: () => Navigator.of(context).push(MaterialPageRoute(
                   builder: (_) => ResultScreen(attemptId: exam.lastAttemptId!, examTitle: exam.title),
                 )),
-                child: const Text('Xem lại điểm', style: TextStyle(color: Colors.white)),
+                icon: const Icon(Icons.assignment_turned_in_outlined, size: 16, color: Colors.white),
+                label: const Text('Xem lại điểm', style: TextStyle(color: Colors.white)),
               ),
-            ])
+            ]),
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: const BorderSide(color: Colors.white70),
+                  minimumSize: const Size.fromHeight(44),
+                ),
+                onPressed: () => _start(exam),
+                icon: const Icon(Icons.refresh, size: 18, color: Colors.white),
+                label: const Text('Làm lại bài', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ]
           else
             SizedBox(
               width: double.infinity,
