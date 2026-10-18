@@ -173,7 +173,9 @@ class _TakingScreenState extends State<TakingScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Câu ${_current.number} · ${answered}/${_questions.length} đã trả lời',
-                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w700)),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w700)),
               const SizedBox(height: 6),
               ClipRRect(
                 borderRadius: BorderRadius.circular(99),
@@ -187,6 +189,18 @@ class _TakingScreenState extends State<TakingScreen> {
             ],
           ),
           actions: [
+            TextButton.icon(
+              onPressed: _submitting ? null : _confirmSubmit,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 6),
+                visualDensity: VisualDensity.compact,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              icon: const Icon(Icons.send_rounded, size: 15, color: AppColors.blue700),
+              label: const Text('Nộp bài',
+                  style: TextStyle(
+                      fontSize: 12, fontWeight: FontWeight.w700, color: AppColors.blue700)),
+            ),
             Container(
               margin: const EdgeInsets.only(right: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),

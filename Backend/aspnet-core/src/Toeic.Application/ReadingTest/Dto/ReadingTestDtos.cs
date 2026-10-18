@@ -92,11 +92,10 @@ namespace Toeic.ReadingTest.Dto
 
     public class ImportExamInput
     {
-        [Required]
+        /// <summary>Tên file .docx (web tự điền từ file upload; API có thể truyền trực tiếp).</summary>
         public string FileName { get; set; }
 
         /// <summary>Base64 content of the .docx file.</summary>
-        [Required]
         public string ContentBase64 { get; set; }
 
         public string Title { get; set; }
