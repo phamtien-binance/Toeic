@@ -1,0 +1,132 @@
+erDiagram
+  RtAttemptAnswers {
+    bigint Id PK
+    bigint AttemptId FK
+    bigint QuestionId FK
+    nvarchar_4 SelectedKey "null"
+    bit IsCorrect
+    datetime2 AnsweredAt
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtAttempts {
+    bigint Id PK
+    bigint ExamId FK
+    bigint UserId
+    nvarchar_64 StudentCode "null"
+    nvarchar_128 StudentName "null"
+    datetime2 StartedAt
+    datetime2 SubmittedAt "null"
+    int Status
+    int Score
+    int CorrectCount
+    int WrongCount
+    int SkippedCount
+    int DurationSeconds
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtExams {
+    bigint Id PK
+    nvarchar_256 Title
+    nvarchar_512 Description "null"
+    int DurationMinutes
+    int TotalQuestions
+    int Status
+    nvarchar_256 SourceFile "null"
+    datetime2 PublishedAt "null"
+    datetime2 OpenAt "null"
+    datetime2 CloseAt "null"
+    bit ShuffleQuestions
+    bit ShuffleOptions
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtPassageDocuments {
+    bigint Id PK
+    bigint PassageId FK
+    nvarchar_256 Label "null"
+    nvarchar_64 DocumentType "null"
+    nvarchar_max Text "null"
+    nvarchar_512 ImagePath "null"
+    int OrderIndex
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtPassages {
+    bigint Id PK
+    bigint ExamId FK
+    nvarchar_64 GroupCode "null"
+    int Part
+    nvarchar_64 PassageType "null"
+    nvarchar_512 Header "null"
+    int OrderIndex
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtQuestionOptions {
+    bigint Id PK
+    bigint QuestionId FK
+    nvarchar_4 OptionKey
+    nvarchar_max Text "null"
+    int OrderIndex
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtQuestions {
+    bigint Id PK
+    bigint ExamId FK
+    bigint PassageId FK "null"
+    int Number
+    int Part
+    nvarchar_max Stem "null"
+    nvarchar_4 AnswerKey "null"
+    nvarchar_max Hint "null"
+    int OrderIndex
+    nvarchar_16 ShuffleQuestions "null"
+    datetime2 CreationTime
+    bigint CreatorUserId "null"
+    datetime2 LastModificationTime "null"
+    bigint LastModifierUserId "null"
+    bit IsDeleted
+    bigint DeleterUserId "null"
+    datetime2 DeletionTime "null"
+  }
+  RtExams ||--o{ RtAttempts : "ExamId"
+  RtExams ||--o{ RtPassages : "ExamId"
+  RtPassages ||--o{ RtPassageDocuments : "PassageId"
+  RtExams ||--o{ RtQuestions : "ExamId"
+  RtPassages ||--o{ RtQuestions : "PassageId"
+  RtAttempts ||--o{ RtAttemptAnswers : "AttemptId"
+  RtQuestions ||--o{ RtAttemptAnswers : "QuestionId"
+  RtQuestions ||--o{ RtQuestionOptions : "QuestionId"
