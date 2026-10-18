@@ -148,8 +148,18 @@ namespace Toeic.ReadingTest.Dto
         public int SubmittedCount { get; set; }
         public double AverageScore { get; set; }
         public int HighestScore { get; set; }
+        public int LowestScore { get; set; }
         public double AverageDurationMinutes { get; set; }
         public List<QuestionStatDto> TopWrongQuestions { get; set; } = new List<QuestionStatDto>();
+        public List<PartStatDto> PartStats { get; set; } = new List<PartStatDto>();
+    }
+
+    public class PartStatDto
+    {
+        public int Part { get; set; }
+        public int QuestionCount { get; set; }
+        public int AttemptsWithAnswers { get; set; }
+        public double AverageScore { get; set; }
     }
 
     // ---------- student / attempts ----------

@@ -15,12 +15,12 @@
     <div class="kpi">
         <div class="kpi-label">Điểm trung bình</div>
         <div class="kpi-value">@Model.AverageScore.ToString("0.#")<small>/100</small></div>
-        <div class="kpi-foot">Toàn bộ bài nộp</div>
+        <div class="kpi-foot">Tính trên bài đã nộp</div>
     </div>
     <div class="kpi">
         <div class="kpi-label">Điểm cao nhất</div>
         <div class="kpi-value">@Model.HighestScore</div>
-        <div class="kpi-foot">Thang điểm 100</div>
+        <div class="kpi-foot">Thấp nhất @Model.LowestScore · thang 100</div>
     </div>
     <div class="kpi">
         <div class="kpi-label">Thời gian làm bài TB</div>
@@ -29,6 +29,39 @@
     </div>
 </div>
 
+@if (Model.PartStats.Any())
+{
+    <div class="card">
+        <div class="card-head">
+            <div class="card-title">Điểm trung bình theo Part</div>
+            <span class="badge badge-grey" style="margin-left:auto">@Model.SubmittedCount bài nộp</span>
+        </div>
+        <table>
+            <thead>
+            <tr><th style="width:110px">Part</th><th style="width:110px">Số câu</th><th style="width:260px">Tỉ lệ đúng TB</th><th>Nhận xét</th></tr>
+            </thead>
+            <tbody>
+            @foreach (var p in Model.PartStats)
+            {
+                var cls = p.AverageScore >= 70 ? "good" : p.AverageScore >= 40 ? "warn" : "bad";
+                var note = p.AverageScore >= 70 ? "Nắm tốt" : p.AverageScore >= 40 ? "Trung bình" : "Cần luyện thêm";
+                <tr>
+                    <td><b>Part @p.Part</b></td>
+                    <td class="mono">@p.QuestionCount câu</td>
+                    <td>
+                        <div class="barwrap">
+                            <div class="bar @cls"><i style="width:@(Math.Min(100, p.AverageScore))%"></i></div>
+                            <b class="mono">@p.AverageScore.ToString("0.#")%</b>
+                        </div>
+                    </td>
+                    <td style="color:var(--muted)">@note</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}
+
 <div class="card">
     <div class="card-head">
         <div class="card-title">Top 10 câu hỏi nhiều sinh viên làm sai nhất</div>
@@ -36,7 +69,7 @@
     </div>
     <table>
         <thead>
-        <tr><th style="width:70px">Câu</th><th>Part</th><th style="width:90px">Đáp án</th><th style="width:240px">Tỉ lệ sai</th><th style="width:160px">Nhiễu nhiều nhất</th><th style="width:90px">Số câu sai</th></tr>
+        <tr><th style="width:70px">Câu</th><th>Part</th><th style="width:90px">Đáp án</th><th style="width:260px">Tỉ lệ sai</th><th style="width:150px">Nhiễu nhiều nhất</th><th style="width:90px">Số câu sai</th></tr>
         </thead>
         <tbody>
         @foreach (var s in Model.TopWrongQuestions)
@@ -47,7 +80,10 @@
                 <td>Part @s.Part</td>
                 <td><span class="badge badge-green">@s.AnswerKey</span></td>
                 <td>
-                    <div class="bar @cls"><i style="width:@(Math.Min(100, s.WrongRate))%"></i></div>
+                    <div class="barwrap">
+                        <div class="bar @cls"><i style="width:@(Math.Min(100, s.WrongRate))%"></i></div>
+                        <b class="mono">@s.WrongRate.ToString("0")%</b>
+                    </div>
                 </td>
                 <td class="mono">@(s.MostChosenWrongKey ?? "—")</td>
                 <td class="mono">@s.WrongAnswers</td>

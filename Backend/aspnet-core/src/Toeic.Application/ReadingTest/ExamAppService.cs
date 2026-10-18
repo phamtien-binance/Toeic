@@ -392,6 +392,9 @@ namespace Toeic.ReadingTest
             var answers = (await _answerRepo.GetAllListAsync()).Where(a => attemptIds.Contains(a.AttemptId)).ToList();
             var questions = (await _questionRepo.GetAllListAsync()).Where(q => q.ExamId == id).ToList();
 
+            // Chỉ tính điểm/thời gian trên các bài đã nộp (bỏ bài đang làm dở)
+            var submitted = attempts.Where(a => a.Status != AttemptStatus.InProgress).ToList();
+
             var stats = questions.Select(q =>
             {
                 var qa = answers.Where(a => a.QuestionId == q.Id).ToList();
@@ -410,16 +413,40 @@ namespace Toeic.ReadingTest
                 };
             }).OrderByDescending(s => s.WrongRate).ThenByDescending(s => s.WrongAnswers).Take(10).ToList();
 
+            // Điểm trung bình theo từng Part (trên các bài đã nộp)
+            var partStats = questions.GroupBy(q => q.Part).OrderBy(g => g.Key).Select(g =>
+            {
+                var ids = g.Select(q => q.Id).ToHashSet();
+                var percents = new List<double>();
+                foreach (var att in submitted)
+                {
+                    var qa = answers.Where(a => a.AttemptId == att.Id && ids.Contains(a.QuestionId)).ToList();
+                    if (qa.Count == 0) continue;
+                    percents.Add(qa.Count(a => a.IsCorrect) * 100.0 / g.Count());
+                }
+                return new PartStatDto
+                {
+                    Part = g.Key,
+                    QuestionCount = g.Count(),
+                    AttemptsWithAnswers = percents.Count,
+                    AverageScore = percents.Count == 0 ? 0 : Math.Round(percents.Average(), 1)
+                };
+            }).ToList();
+
             return new ExamStatsDto
             {
                 ExamId = exam.Id,
                 Title = exam.Title,
                 AttemptCount = attempts.Count,
-                SubmittedCount = attempts.Count(a => a.Status != AttemptStatus.InProgress),
-                AverageScore = attempts.Any() ? Math.Round(attempts.Average(a => a.Score), 1) : 0,
-                HighestScore = attempts.Any() ? attempts.Max(a => a.Score) : 0,
-                AverageDurationMinutes = attempts.Any() ? Math.Round(attempts.Average(a => a.DurationSeconds) / 60.0, 1) : 0,
-                TopWrongQuestions = stats
+                SubmittedCount = submitted.Count,
+                AverageScore = submitted.Any() ? Math.Round(submitted.Average(a => a.Score), 1) : 0,
+                HighestScore = submitted.Any() ? submitted.Max(a => a.Score) : 0,
+                LowestScore = submitted.Any() ? submitted.Min(a => a.Score) : 0,
+                AverageDurationMinutes = submitted.Any() && submitted.Any(a => a.DurationSeconds > 0)
+                    ? Math.Round(submitted.Where(a => a.DurationSeconds > 0).Average(a => a.DurationSeconds) / 60.0, 1)
+                    : 0,
+                TopWrongQuestions = stats,
+                PartStats = partStats
             };
         }
 

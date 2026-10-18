@@ -128,6 +128,10 @@ tbody tr:hover{background:#FBFDFF}
 .bar > i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--blue-500),var(--blue-600))}
 .bar.warn > i{background:linear-gradient(90deg,#F0A24A,#DC7B13)}
 .bar.bad > i{background:linear-gradient(90deg,#F0756A,#D92D20)}
+.bar.good > i{background:linear-gradient(90deg,#4EC08A,#1B8A50)}
+.barwrap{display:flex;align-items:center;gap:10px}
+.barwrap .bar{flex:1;min-width:80px}
+.barwrap b{font-size:11.5px;color:var(--ink-2);min-width:44px;text-align:right}
 
 .drop{
   border:2px dashed var(--blue-100);border-radius:16px;background:var(--blue-50);
