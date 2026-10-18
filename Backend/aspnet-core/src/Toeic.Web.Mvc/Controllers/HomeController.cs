@@ -9,6 +9,8 @@ public class HomeController : ToeicControllerBase
 {
     public ActionResult Index()
     {
-        return View();
+        // Trang chủ mặc định của ABP (About) không dùng trong đồ án:
+        // đưa giảng viên thẳng vào danh sách đề thi.
+        return Redirect("/Exam");
     }
 }

@@ -76,9 +76,9 @@ public class AccountController : ToeicControllerBase
 
     public ActionResult Login(string userNameOrEmailAddress = "", string returnUrl = "", string successMessage = "")
     {
-        if (string.IsNullOrWhiteSpace(returnUrl))
+        if (string.IsNullOrWhiteSpace(returnUrl) || returnUrl == "/")
         {
-            returnUrl = GetAppHomeUrl();
+            returnUrl = "/Exam"; // mặc định vào thẳng trang quản trị đề thi
         }
 
         return View(new LoginFormViewModel
